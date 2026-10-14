@@ -1,0 +1,214 @@
+from lexer import Token, lex
+from ast_nodes import *
+
+TYPE_TOKENS = ("INT", "FLOAT", "BOOL", "STRING_T")
+STMT_START = TYPE_TOKENS + ("IF", "WHILE", "PRINT", "ID")
+CMP_OPS = {"EQ": "==", "NEQ": "!=", "LT": "<", "GT": ">"}
+TERM_OPS = {"PLUS": "+", "MINUS": "-"}
+FACTOR_OPS = {"STAR": "*", "SLASH": "/"}
+
+
+class ParseError(Exception):
+    def __init__(self, message: str, line: int, col: int, expected, found):
+        super().__init__(message)
+        self.message = message
+        self.line = line
+        self.col = col
+        self.expected = expected
+        self.found = found
+
+
+class Parser:
+    def __init__(self, tokens: list[Token]):
+        self.tokens = list(tokens)
+        if self.tokens:
+            last = self.tokens[-1]
+            eof = Token("EOF", "", last.line, last.col + len(last.value))
+        else:
+            eof = Token("EOF", "", 1, 1)
+        self.tokens.append(eof)
+        self.pos = 0
+        self.errors: list[ParseError] = []
+
+    def parse(self, partial: bool = False) -> Program:
+        self.partial = partial
+        statements = []
+        while not self._at_end():
+            if self._check("RBRACE"):
+                err = self._error("statement", self._peek())
+                self.errors.append(err)
+                self._advance()
+                continue
+            try:
+                statements.append(self._statement())
+            except ParseError as e:
+                self.errors.append(e)
+                if partial:
+                    statements.append(ErrorNode(e.expected, e.found, [self._peek().value], e.line, e.col))
+                self._synchronize()
+        if self.errors:
+            if not partial:
+                raise self.errors[0]
+        return assign_node_ids(Program(statements))
+
+    def _statement(self):
+        if self._check(*TYPE_TOKENS):
+            return self._declaration()
+        if self._check("IF"):
+            return self._if_stmt()
+        if self._check("WHILE"):
+            return self._while_stmt()
+        if self._check("PRINT"):
+            return self._print_stmt()
+        if self._check("ID"):
+            return self._assignment()
+        raise self._error("statement", self._peek())
+
+    def _declaration(self):
+        type_tok = self._consume(*TYPE_TOKENS, expected="type")
+        name_tok = self._consume("ID", expected="ID")
+        self._consume("ASSIGN", expected="ASSIGN")
+        expr = self._expression()
+        self._consume("SEMI", expected="SEMI")
+        return Declaration(type_tok.value, name_tok.value, expr, type_tok.line, col=type_tok.col)
+
+    def _assignment(self):
+        name_tok = self._consume("ID", expected="ID")
+        self._consume("ASSIGN", expected="ASSIGN")
+        expr = self._expression()
+        self._consume("SEMI", expected="SEMI")
+        return Assignment(name_tok.value, expr, name_tok.line, col=name_tok.col)
+
+    def _if_stmt(self):
+        tok = self._consume("IF", expected="IF")
+        self._consume("LPAREN", expected="LPAREN")
+        cond = self._expression()
+        self._consume("RPAREN", expected="RPAREN")
+        body = self._block()
+        return IfStmt(cond, body, tok.line, col=tok.col)
+
+    def _while_stmt(self):
+        tok = self._consume("WHILE", expected="WHILE")
+        self._consume("LPAREN", expected="LPAREN")
+        cond = self._expression()
+        self._consume("RPAREN", expected="RPAREN")
+        body = self._block()
+        return WhileStmt(cond, body, tok.line, col=tok.col)
+
+    def _print_stmt(self):
+        tok = self._consume("PRINT", expected="PRINT")
+        self._consume("LPAREN", expected="LPAREN")
+        expr = self._expression()
+        self._consume("RPAREN", expected="RPAREN")
+        self._consume("SEMI", expected="SEMI")
+        return PrintStmt(expr, tok.line, col=tok.col)
+
+    def _block(self) -> list:
+        self._consume("LBRACE", expected="LBRACE")
+        body = []
+        while not self._at_end() and not self._check("RBRACE"):
+            try:
+                body.append(self._statement())
+            except ParseError as e:
+                self.errors.append(e)
+                if getattr(self, "partial", False):
+                    body.append(ErrorNode(e.expected, e.found, [self._peek().value], e.line, e.col))
+                self._synchronize()
+        self._consume("RBRACE", expected="RBRACE")
+        return body
+
+    def _expression(self):
+        return self._comparison()
+
+    def _comparison(self):
+        node = self._term()
+        while self._check("EQ", "NEQ", "LT", "GT"):
+            op_tok = self._advance()
+            right = self._term()
+            node = BinaryOp(CMP_OPS[op_tok.type], node, right, op_tok.line, col=op_tok.col)
+        return node
+
+    def _term(self):
+        node = self._factor()
+        while self._check("PLUS", "MINUS"):
+            op_tok = self._advance()
+            right = self._factor()
+            node = BinaryOp(TERM_OPS[op_tok.type], node, right, op_tok.line, col=op_tok.col)
+        return node
+
+    def _factor(self):
+        node = self._unary()
+        while self._check("STAR", "SLASH"):
+            op_tok = self._advance()
+            right = self._unary()
+            node = BinaryOp(FACTOR_OPS[op_tok.type], node, right, op_tok.line, col=op_tok.col)
+        return node
+
+    def _unary(self):
+        return self._primary()
+
+    def _primary(self):
+        tok = self._peek()
+        if tok.type == "NUMBER":
+            self._advance()
+            return Number(tok.value, tok.line, col=tok.col)
+        if tok.type == "STRING":
+            self._advance()
+            return StringLit(tok.value, tok.line, col=tok.col)
+        if tok.type == "TRUE":
+            self._advance()
+            return BoolLit(True, tok.line, col=tok.col)
+        if tok.type == "FALSE":
+            self._advance()
+            return BoolLit(False, tok.line, col=tok.col)
+        if tok.type == "ID":
+            self._advance()
+            return Identifier(tok.value, tok.line, col=tok.col)
+        if tok.type == "LPAREN":
+            self._advance()
+            expr = self._expression()
+            self._consume("RPAREN", expected="RPAREN")
+            return expr
+        if tok.type in ("INT", "FLOAT", "BOOL", "STRING_T"):
+            # Cast syntax: int(expr), float(expr), bool(expr), string(expr)
+            cast_type = tok.value  # "int", "float", "bool", "string"
+            self._advance()
+            self._consume("LPAREN", expected="LPAREN")
+            inner = self._expression()
+            self._consume("RPAREN", expected="RPAREN")
+            return Cast(cast_type, inner, tok.line, col=tok.col)
+        raise self._error("expression", tok)
+
+    def _synchronize(self):
+        while not self._at_end():
+            if self._check("SEMI"):
+                self._advance()
+                return
+            if self._check("RBRACE", *STMT_START):
+                return
+            self._advance()
+
+    def _at_end(self) -> bool:
+        return self._peek().type == "EOF"
+
+    def _peek(self) -> Token:
+        return self.tokens[self.pos]
+
+    def _advance(self) -> Token:
+        tok = self._peek()
+        if not self._at_end():
+            self.pos += 1
+        return tok
+
+    def _check(self, *types: str) -> bool:
+        return self._peek().type in types
+
+    def _consume(self, *types: str, expected: str) -> Token:
+        if self._check(*types):
+            return self._advance()
+        raise self._error(expected, self._peek())
+
+    def _error(self, expected, tok: Token) -> ParseError:
+        found = tok.type
+        msg = f"expected {expected}, found {found}"
+        return ParseError(msg, tok.line, tok.col, expected, found)

@@ -1,0 +1,106 @@
+{
+  "tc01.lang": {
+    "category": "lexical",
+    "should_fix": true
+  },
+  "tc02.lang": {
+    "category": "lexical",
+    "should_fix": true
+  },
+  "tc03.lang": {
+    "category": "lexical",
+    "should_fix": true
+  },
+  "tc04.lang": {
+    "category": "lexical",
+    "should_fix": true
+  },
+  "tc05.lang": {
+    "category": "lexical",
+    "should_fix": true
+  },
+  "tc06.lang": {
+    "category": "lexical",
+    "should_fix": true
+  },
+  "tc07.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc08.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc09.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc10.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc11.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc12.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc13.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc14.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc15.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc16.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc17.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc18.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc19.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc20.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc21.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc22.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc23.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc24.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc25.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc26.lang": {
+    "category": "syntax",
+    "should_fix": true
+  }
+}

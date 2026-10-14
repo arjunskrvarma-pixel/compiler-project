@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+tmp.lang
+traces/
+.cursor/
+.venv/
+venv/
+pytest-cache-files-*/
+.pytest_cache/
+tests/myprogram.lang

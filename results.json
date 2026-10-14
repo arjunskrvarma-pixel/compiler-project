@@ -1,0 +1,1641 @@
+{
+  "text_guard_off": {
+    "rows": [
+      {
+        "name": "tc01",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 8.836528778076172,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc02",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.728994131088257,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc03",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.8642361164093018,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc04",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.135303020477295,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc05",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.3921737670898438,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc06",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.0630085468292236,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc07",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.1932270526885986,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc08",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.474839925765991,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc09",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.7890496253967285,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc10",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.740626573562622,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc11",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.9258344173431396,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc12",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.5830507278442383,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc13",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 3,
+        "elapsed": 6.209181785583496,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc14",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.06050443649292,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc15",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.6980984210968018,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc16",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.8515794277191162,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc17",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 10.476743698120117,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 1
+      },
+      {
+        "name": "tc18",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.615745782852173,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc19",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.4781017303466797,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc20",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.762230396270752,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc21",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 5.05871319770813,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc22",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.421294212341309,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc23",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 3,
+        "elapsed": 8.406319379806519,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc24",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 8.349382400512695,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc25",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.7539329528808594,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc26",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.012484550476074,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      }
+    ],
+    "summary": {
+      "total": 26,
+      "detected": 26,
+      "fixed": 19,
+      "success_rate": 73.07692307692307,
+      "mean_attempts": 1.4210526315789473,
+      "schema_rejection_count": 0,
+      "intent_rejection_count": 0,
+      "token_level_malformed_output_count": 1
+    }
+  },
+  "text_guard_on": {
+    "rows": [
+      {
+        "name": "tc01",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 5.751769065856934,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc02",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.5983479022979736,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc03",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.8885490894317627,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc04",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 8.217705011367798,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc05",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.2838821411132812,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc06",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.09527587890625,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc07",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.2449500560760498,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc08",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.017180681228638,
+        "schema_rejections": 0,
+        "intent_rejections": 1,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc09",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.9130947589874268,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc10",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.363459587097168,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc11",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.9510228633880615,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc12",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.6534297466278076,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc13",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.3185253143310547,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc14",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 4.763110637664795,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc15",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.9195969104766846,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc16",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.890056848526001,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc17",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.948570489883423,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc18",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.596386671066284,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc19",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.3535172939300537,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc20",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 8.566649198532104,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc21",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.714597702026367,
+        "schema_rejections": 0,
+        "intent_rejections": 3,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc22",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.326535224914551,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc23",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 3,
+        "elapsed": 7.590437173843384,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc24",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 8.542433738708496,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc25",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.7557897567749023,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc26",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.351298093795776,
+        "schema_rejections": 0,
+        "intent_rejections": 3,
+        "malformed_output": 0
+      }
+    ],
+    "summary": {
+      "total": 26,
+      "detected": 26,
+      "fixed": 17,
+      "success_rate": 65.38461538461539,
+      "mean_attempts": 1.2941176470588236,
+      "schema_rejection_count": 0,
+      "intent_rejection_count": 7,
+      "token_level_malformed_output_count": 0
+    }
+  },
+  "ast_guard_off": {
+    "rows": [
+      {
+        "name": "tc01",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.474259614944458,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc02",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.7069060802459717,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc03",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.7811641693115234,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc04",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.0056955814361572,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc05",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.29900860786438,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc06",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 2.041140556335449,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc07",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 9.48038387298584,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc08",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 8.255264043807983,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc09",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 8.832306385040283,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc10",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 8.41744589805603,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc11",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.613887071609497,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc12",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.174744606018066,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc13",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.846168756484985,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc14",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 9.476232767105103,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc15",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.021036863327026,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc16",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.4517810344696045,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc17",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 5.143481492996216,
+        "schema_rejections": 1,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc18",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.902437210083008,
+        "schema_rejections": 2,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc19",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 11.616337299346924,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc20",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 13.269536256790161,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc21",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 8.112467527389526,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc22",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 9.52024531364441,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc23",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 10.619333505630493,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc24",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 11.705158233642578,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc25",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.823874235153198,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc26",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 10.248142957687378,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      }
+    ],
+    "summary": {
+      "total": 26,
+      "detected": 26,
+      "fixed": 8,
+      "success_rate": 30.76923076923077,
+      "mean_attempts": 1.375,
+      "schema_rejection_count": 54,
+      "intent_rejection_count": 0,
+      "token_level_malformed_output_count": 0
+    }
+  },
+  "ast_guard_on": {
+    "rows": [
+      {
+        "name": "tc01",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 3,
+        "elapsed": 6.319416046142578,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc02",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.548553466796875,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc03",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.4258959293365479,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc04",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 9.375699281692505,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc05",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.1994800567626953,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc06",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.7780728340148926,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc07",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.864386320114136,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc08",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 10.699662208557129,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc09",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.517209529876709,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc10",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 9.923958539962769,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc11",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.020408630371094,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc12",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 9.437044620513916,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc13",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 7.426342010498047,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc14",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 9.07654881477356,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc15",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 9.66356372833252,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc16",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.4404776096343994,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc17",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 13.20326852798462,
+        "schema_rejections": 1,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc18",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 11.786580324172974,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc19",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 10.73970651626587,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc20",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 21.564382553100586,
+        "schema_rejections": 2,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc21",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 11.592135906219482,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc22",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 10.295150518417358,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc23",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 13.245451211929321,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc24",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 12.045968055725098,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc25",
+        "category": "semantic",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 21.515820026397705,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc26",
+        "category": "syntax",
+        "detected": true,
+        "attempts": [
+          false,
+          false,
+          false
+        ],
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 12.7261643409729,
+        "schema_rejections": 3,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      }
+    ],
+    "summary": {
+      "total": 26,
+      "detected": 26,
+      "fixed": 7,
+      "success_rate": 26.923076923076923,
+      "mean_attempts": 1.7142857142857142,
+      "schema_rejection_count": 54,
+      "intent_rejection_count": 0,
+      "token_level_malformed_output_count": 0
+    }
+  }
+}
