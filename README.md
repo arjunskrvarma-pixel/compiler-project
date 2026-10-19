@@ -6,7 +6,7 @@ This project validates a small statically typed language and uses a local Ollama
 
 - Lexer, recursive-descent parser, AST, and semantic type checker
 - Structured lexical, syntax, and semantic error records with the active symbol table
-- Local Ollama integration using `qwen2.5-coder:7b`
+- Local Ollama integration using `qwen2.5-coder:3b`
 - Text repair mode with compiler-feedback retries
 - AST node-targeted structural patching with stable pre-order node IDs, partial ASTs, compact context export, and a strict edit DSL
 - Semantic intent-invariance guard that rejects repairs which alter protected control-flow, assignments, dependencies, or printed expressions outside the error region
@@ -17,11 +17,11 @@ This project validates a small statically typed language and uses a local Ollama
 
 - Python 3.10+
 - Ollama installed and running
-- The `qwen2.5-coder:7b` model
+- The `qwen2.5-coder:3b` model
 - Pytest for the offline test suite
 
 ```bash
-ollama pull qwen2.5-coder:7b
+ollama pull qwen2.5-coder:3b
 python -m pip install pytest
 ```
 
@@ -33,7 +33,7 @@ python main.py tests/tc01.lang --repair-mode ast --intent-guard on
 python main.py tests/tc01.lang --repair-mode text --intent-guard off
 python main.py --interactive --repair-mode ast --intent-guard on
 python evaluate.py
-python evaluate.py --model qwen2.5-coder:1.5b
+python evaluate.py --model qwen2.5-coder:3b
 python -m pytest tests -q
 ```
 

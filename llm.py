@@ -4,7 +4,7 @@ import re
 import ollama
 from errors import ErrorRecord
 
-_MODEL = "qwen2.5-coder:7b"
+_MODEL = "qwen2.5-coder:3b"
 _FALLBACK = {"explanation": "LLM returned invalid format", "fixed_code": ""}
 
 

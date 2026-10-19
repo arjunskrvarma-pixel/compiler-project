@@ -6,11 +6,13 @@
         "category": "lexical",
         "detected": true,
         "attempts": [
-          true
+          false,
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 1,
-        "elapsed": 8.836528778076172,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 4.050178050994873,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -25,10 +27,10 @@
         ],
         "final_success": true,
         "total_attempts": 2,
-        "elapsed": 3.728994131088257,
+        "elapsed": 2.8005077838897705,
         "schema_rejections": 0,
         "intent_rejections": 0,
-        "malformed_output": 0
+        "malformed_output": 1
       },
       {
         "name": "tc03",
@@ -39,7 +41,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.8642361164093018,
+        "elapsed": 1.0127077102661133,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -49,11 +51,13 @@
         "category": "lexical",
         "detected": true,
         "attempts": [
-          true
+          false,
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 1,
-        "elapsed": 2.135303020477295,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 3.816810369491577,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -63,12 +67,11 @@
         "category": "lexical",
         "detected": true,
         "attempts": [
-          false,
           true
         ],
         "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 3.3921737670898438,
+        "total_attempts": 1,
+        "elapsed": 0.9925358295440674,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -82,7 +85,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 2.0630085468292236,
+        "elapsed": 0.9948933124542236,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -96,7 +99,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.1932270526885986,
+        "elapsed": 0.696613073348999,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -112,7 +115,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 6.474839925765991,
+        "elapsed": 2.929117202758789,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -126,7 +129,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.7890496253967285,
+        "elapsed": 1.0343337059020996,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -136,12 +139,11 @@
         "category": "syntax",
         "detected": true,
         "attempts": [
-          false,
           true
         ],
         "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 3.740626573562622,
+        "total_attempts": 1,
+        "elapsed": 0.9902172088623047,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -155,7 +157,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.9258344173431396,
+        "elapsed": 0.7847082614898682,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -169,7 +171,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.5830507278442383,
+        "elapsed": 0.879105806350708,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -179,13 +181,11 @@
         "category": "syntax",
         "detected": true,
         "attempts": [
-          false,
-          false,
           true
         ],
         "final_success": true,
-        "total_attempts": 3,
-        "elapsed": 6.209181785583496,
+        "total_attempts": 1,
+        "elapsed": 0.9846868515014648,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -201,7 +201,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 7.06050443649292,
+        "elapsed": 3.3314356803894043,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -215,7 +215,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.6980984210968018,
+        "elapsed": 1.014892339706421,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -229,7 +229,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.8515794277191162,
+        "elapsed": 0.7291803359985352,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -245,10 +245,10 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 10.476743698120117,
+        "elapsed": 3.023531436920166,
         "schema_rejections": 0,
         "intent_rejections": 0,
-        "malformed_output": 1
+        "malformed_output": 0
       },
       {
         "name": "tc18",
@@ -261,7 +261,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 6.615745782852173,
+        "elapsed": 3.735412120819092,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -275,7 +275,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 2.4781017303466797,
+        "elapsed": 1.173130750656128,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -291,7 +291,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 7.762230396270752,
+        "elapsed": 2.681302547454834,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -302,11 +302,12 @@
         "detected": true,
         "attempts": [
           false,
-          true
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 5.05871319770813,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 3.921022415161133,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -322,7 +323,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 7.421294212341309,
+        "elapsed": 3.3686206340789795,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -332,13 +333,11 @@
         "category": "semantic",
         "detected": true,
         "attempts": [
-          false,
-          false,
           true
         ],
         "final_success": true,
-        "total_attempts": 3,
-        "elapsed": 8.406319379806519,
+        "total_attempts": 1,
+        "elapsed": 1.0246336460113525,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -350,11 +349,11 @@
         "attempts": [
           false,
           false,
-          false
+          true
         ],
-        "final_success": false,
+        "final_success": true,
         "total_attempts": 3,
-        "elapsed": 8.349382400512695,
+        "elapsed": 3.146294116973877,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -364,11 +363,13 @@
         "category": "semantic",
         "detected": true,
         "attempts": [
-          true
+          false,
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 1,
-        "elapsed": 1.7539329528808594,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 4.162165880203247,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -378,11 +379,13 @@
         "category": "syntax",
         "detected": true,
         "attempts": [
-          true
+          false,
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 1,
-        "elapsed": 2.012484550476074,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.589235067367554,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -391,9 +394,9 @@
     "summary": {
       "total": 26,
       "detected": 26,
-      "fixed": 19,
-      "success_rate": 73.07692307692307,
-      "mean_attempts": 1.4210526315789473,
+      "fixed": 15,
+      "success_rate": 57.692307692307686,
+      "mean_attempts": 1.2,
       "schema_rejection_count": 0,
       "intent_rejection_count": 0,
       "token_level_malformed_output_count": 1
@@ -407,11 +410,12 @@
         "detected": true,
         "attempts": [
           false,
-          true
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 5.751769065856934,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 3.689966917037964,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -422,31 +426,18 @@
         "detected": true,
         "attempts": [
           false,
-          true
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 3.5983479022979736,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 5.6802802085876465,
         "schema_rejections": 0,
         "intent_rejections": 0,
-        "malformed_output": 0
+        "malformed_output": 3
       },
       {
         "name": "tc03",
-        "category": "lexical",
-        "detected": true,
-        "attempts": [
-          true
-        ],
-        "final_success": true,
-        "total_attempts": 1,
-        "elapsed": 1.8885490894317627,
-        "schema_rejections": 0,
-        "intent_rejections": 0,
-        "malformed_output": 0
-      },
-      {
-        "name": "tc04",
         "category": "lexical",
         "detected": true,
         "attempts": [
@@ -456,7 +447,21 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 8.217705011367798,
+        "elapsed": 6.01643180847168,
+        "schema_rejections": 0,
+        "intent_rejections": 0,
+        "malformed_output": 0
+      },
+      {
+        "name": "tc04",
+        "category": "lexical",
+        "detected": true,
+        "attempts": [
+          true
+        ],
+        "final_success": true,
+        "total_attempts": 1,
+        "elapsed": 1.1407527923583984,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -466,12 +471,11 @@
         "category": "lexical",
         "detected": true,
         "attempts": [
-          false,
           true
         ],
         "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 3.2838821411132812,
+        "total_attempts": 1,
+        "elapsed": 0.9352164268493652,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -485,7 +489,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 2.09527587890625,
+        "elapsed": 0.9760799407958984,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -499,7 +503,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.2449500560760498,
+        "elapsed": 0.7153527736663818,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -515,9 +519,9 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 6.017180681228638,
+        "elapsed": 2.872391700744629,
         "schema_rejections": 0,
-        "intent_rejections": 1,
+        "intent_rejections": 0,
         "malformed_output": 0
       },
       {
@@ -529,7 +533,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.9130947589874268,
+        "elapsed": 0.775944709777832,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -543,7 +547,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 2.363459587097168,
+        "elapsed": 1.5720078945159912,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -557,7 +561,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.9510228633880615,
+        "elapsed": 0.8622910976409912,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -571,7 +575,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.6534297466278076,
+        "elapsed": 1.0326848030090332,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -585,7 +589,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.3185253143310547,
+        "elapsed": 1.0570862293243408,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -601,7 +605,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 4.763110637664795,
+        "elapsed": 3.5562119483947754,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -615,7 +619,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.9195969104766846,
+        "elapsed": 0.8828082084655762,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -625,11 +629,12 @@
         "category": "semantic",
         "detected": true,
         "attempts": [
+          false,
           true
         ],
         "final_success": true,
-        "total_attempts": 1,
-        "elapsed": 1.890056848526001,
+        "total_attempts": 2,
+        "elapsed": 2.219024419784546,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -645,7 +650,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 6.948570489883423,
+        "elapsed": 3.75827693939209,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -661,7 +666,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 6.596386671066284,
+        "elapsed": 4.5552077293396,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -675,7 +680,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 2.3535172939300537,
+        "elapsed": 1.0682318210601807,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -691,7 +696,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 8.566649198532104,
+        "elapsed": 3.035616874694824,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -707,7 +712,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 7.714597702026367,
+        "elapsed": 4.274976015090942,
         "schema_rejections": 0,
         "intent_rejections": 3,
         "malformed_output": 0
@@ -717,11 +722,13 @@
         "category": "syntax",
         "detected": true,
         "attempts": [
-          true
+          false,
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 1,
-        "elapsed": 2.326535224914551,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 3.999781370162964,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -731,13 +738,11 @@
         "category": "semantic",
         "detected": true,
         "attempts": [
-          false,
-          false,
           true
         ],
         "final_success": true,
-        "total_attempts": 3,
-        "elapsed": 7.590437173843384,
+        "total_attempts": 1,
+        "elapsed": 1.523848056793213,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -753,9 +758,9 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 8.542433738708496,
+        "elapsed": 3.730729818344116,
         "schema_rejections": 0,
-        "intent_rejections": 0,
+        "intent_rejections": 1,
         "malformed_output": 0
       },
       {
@@ -763,13 +768,15 @@
         "category": "semantic",
         "detected": true,
         "attempts": [
-          true
+          false,
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 1,
-        "elapsed": 1.7557897567749023,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 4.379220008850098,
         "schema_rejections": 0,
-        "intent_rejections": 0,
+        "intent_rejections": 3,
         "malformed_output": 0
       },
       {
@@ -783,21 +790,21 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 7.351298093795776,
+        "elapsed": 5.6209187507629395,
         "schema_rejections": 0,
-        "intent_rejections": 3,
+        "intent_rejections": 0,
         "malformed_output": 0
       }
     ],
     "summary": {
       "total": 26,
       "detected": 26,
-      "fixed": 17,
-      "success_rate": 65.38461538461539,
-      "mean_attempts": 1.2941176470588236,
+      "fixed": 13,
+      "success_rate": 50.0,
+      "mean_attempts": 1.0769230769230769,
       "schema_rejection_count": 0,
       "intent_rejection_count": 7,
-      "token_level_malformed_output_count": 0
+      "token_level_malformed_output_count": 3
     }
   },
   "ast_guard_off": {
@@ -807,11 +814,13 @@
         "category": "lexical",
         "detected": true,
         "attempts": [
-          true
+          false,
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 1,
-        "elapsed": 2.474259614944458,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 4.298793792724609,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -822,14 +831,15 @@
         "detected": true,
         "attempts": [
           false,
+          false,
           true
         ],
         "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 3.7069060802459717,
+        "total_attempts": 3,
+        "elapsed": 4.81090235710144,
         "schema_rejections": 0,
         "intent_rejections": 0,
-        "malformed_output": 0
+        "malformed_output": 2
       },
       {
         "name": "tc03",
@@ -840,7 +850,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.7811641693115234,
+        "elapsed": 1.1557979583740234,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -854,7 +864,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 2.0056955814361572,
+        "elapsed": 1.0948164463043213,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -864,12 +874,11 @@
         "category": "lexical",
         "detected": true,
         "attempts": [
-          false,
           true
         ],
         "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 3.29900860786438,
+        "total_attempts": 1,
+        "elapsed": 0.6983311176300049,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -883,7 +892,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 2.041140556335449,
+        "elapsed": 1.1952974796295166,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -899,7 +908,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 9.48038387298584,
+        "elapsed": 6.656301975250244,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -915,7 +924,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 8.255264043807983,
+        "elapsed": 10.472317695617676,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -931,7 +940,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 8.832306385040283,
+        "elapsed": 5.398190259933472,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -947,7 +956,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 8.41744589805603,
+        "elapsed": 6.495734214782715,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -959,12 +968,12 @@
         "attempts": [
           false,
           false,
-          false
+          true
         ],
-        "final_success": false,
+        "final_success": true,
         "total_attempts": 3,
-        "elapsed": 7.613887071609497,
-        "schema_rejections": 3,
+        "elapsed": 8.657323598861694,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -975,12 +984,12 @@
         "attempts": [
           false,
           false,
-          false
+          true
         ],
-        "final_success": false,
+        "final_success": true,
         "total_attempts": 3,
-        "elapsed": 7.174744606018066,
-        "schema_rejections": 3,
+        "elapsed": 6.556907653808594,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -995,7 +1004,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 6.846168756484985,
+        "elapsed": 8.877508163452148,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1011,8 +1020,8 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 9.476232767105103,
-        "schema_rejections": 3,
+        "elapsed": 553.2107017040253,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1027,8 +1036,8 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 7.021036863327026,
-        "schema_rejections": 3,
+        "elapsed": 5.88917350769043,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1041,7 +1050,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.4517810344696045,
+        "elapsed": 1.0946142673492432,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1052,12 +1061,13 @@
         "detected": true,
         "attempts": [
           false,
-          true
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 5.143481492996216,
-        "schema_rejections": 1,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 6.937908172607422,
+        "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1072,7 +1082,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 6.902437210083008,
+        "elapsed": 5.228435277938843,
         "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1088,7 +1098,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 11.616337299346924,
+        "elapsed": 11.748852729797363,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1104,8 +1114,8 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 13.269536256790161,
-        "schema_rejections": 3,
+        "elapsed": 4.6230854988098145,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1120,7 +1130,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 8.112467527389526,
+        "elapsed": 5.578798532485962,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1136,7 +1146,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 9.52024531364441,
+        "elapsed": 9.312272071838379,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1152,8 +1162,8 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 10.619333505630493,
-        "schema_rejections": 3,
+        "elapsed": 5.734277009963989,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1168,7 +1178,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 11.705158233642578,
+        "elapsed": 6.826870679855347,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1184,8 +1194,8 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 6.823874235153198,
-        "schema_rejections": 3,
+        "elapsed": 5.638262987136841,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1195,13 +1205,12 @@
         "detected": true,
         "attempts": [
           false,
-          false,
-          false
+          true
         ],
-        "final_success": false,
-        "total_attempts": 3,
-        "elapsed": 10.248142957687378,
-        "schema_rejections": 3,
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 6.685761451721191,
+        "schema_rejections": 1,
         "intent_rejections": 0,
         "malformed_output": 0
       }
@@ -1209,12 +1218,12 @@
     "summary": {
       "total": 26,
       "detected": 26,
-      "fixed": 8,
-      "success_rate": 30.76923076923077,
-      "mean_attempts": 1.375,
-      "schema_rejection_count": 54,
+      "fixed": 9,
+      "success_rate": 34.61538461538461,
+      "mean_attempts": 1.7777777777777777,
+      "schema_rejection_count": 47,
       "intent_rejection_count": 0,
-      "token_level_malformed_output_count": 0
+      "token_level_malformed_output_count": 2
     }
   },
   "ast_guard_on": {
@@ -1226,11 +1235,11 @@
         "attempts": [
           false,
           false,
-          true
+          false
         ],
-        "final_success": true,
+        "final_success": false,
         "total_attempts": 3,
-        "elapsed": 6.319416046142578,
+        "elapsed": 4.333465099334717,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1245,10 +1254,10 @@
         ],
         "final_success": true,
         "total_attempts": 2,
-        "elapsed": 3.548553466796875,
+        "elapsed": 2.7533364295959473,
         "schema_rejections": 0,
         "intent_rejections": 0,
-        "malformed_output": 0
+        "malformed_output": 1
       },
       {
         "name": "tc03",
@@ -1259,7 +1268,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.4258959293365479,
+        "elapsed": 1.2163488864898682,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1275,7 +1284,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 9.375699281692505,
+        "elapsed": 4.388489484786987,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1285,12 +1294,11 @@
         "category": "lexical",
         "detected": true,
         "attempts": [
-          false,
           true
         ],
         "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 3.1994800567626953,
+        "total_attempts": 1,
+        "elapsed": 0.684680700302124,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1304,7 +1312,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.7780728340148926,
+        "elapsed": 0.9581117630004883,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1315,13 +1323,12 @@
         "detected": true,
         "attempts": [
           false,
-          false,
-          false
+          true
         ],
-        "final_success": false,
-        "total_attempts": 3,
-        "elapsed": 7.864386320114136,
-        "schema_rejections": 3,
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.18772029876709,
+        "schema_rejections": 1,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1336,7 +1343,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 10.699662208557129,
+        "elapsed": 8.932931661605835,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1352,7 +1359,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 6.517209529876709,
+        "elapsed": 11.302610397338867,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1368,7 +1375,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 9.923958539962769,
+        "elapsed": 7.978514194488525,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1384,7 +1391,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 7.020408630371094,
+        "elapsed": 9.439722061157227,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1396,12 +1403,12 @@
         "attempts": [
           false,
           false,
-          false
+          true
         ],
-        "final_success": false,
+        "final_success": true,
         "total_attempts": 3,
-        "elapsed": 9.437044620513916,
-        "schema_rejections": 3,
+        "elapsed": 5.591386318206787,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1412,12 +1419,12 @@
         "attempts": [
           false,
           false,
-          false
+          true
         ],
-        "final_success": false,
+        "final_success": true,
         "total_attempts": 3,
-        "elapsed": 7.426342010498047,
-        "schema_rejections": 3,
+        "elapsed": 6.636753559112549,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1432,7 +1439,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 9.07654881477356,
+        "elapsed": 4.6103315353393555,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1448,8 +1455,8 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 9.66356372833252,
-        "schema_rejections": 3,
+        "elapsed": 6.128949880599976,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1462,7 +1469,7 @@
         ],
         "final_success": true,
         "total_attempts": 1,
-        "elapsed": 1.4404776096343994,
+        "elapsed": 1.072342872619629,
         "schema_rejections": 0,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1473,12 +1480,13 @@
         "detected": true,
         "attempts": [
           false,
-          true
+          false,
+          false
         ],
-        "final_success": true,
-        "total_attempts": 2,
-        "elapsed": 13.20326852798462,
-        "schema_rejections": 1,
+        "final_success": false,
+        "total_attempts": 3,
+        "elapsed": 8.676262378692627,
+        "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1493,8 +1501,8 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 11.786580324172974,
-        "schema_rejections": 3,
+        "elapsed": 5.508151531219482,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1509,7 +1517,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 10.73970651626587,
+        "elapsed": 12.519365310668945,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1525,7 +1533,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 21.564382553100586,
+        "elapsed": 4.100994110107422,
         "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1541,7 +1549,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 11.592135906219482,
+        "elapsed": 6.504346609115601,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1557,7 +1565,7 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 10.295150518417358,
+        "elapsed": 7.352839946746826,
         "schema_rejections": 3,
         "intent_rejections": 0,
         "malformed_output": 0
@@ -1573,8 +1581,8 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 13.245451211929321,
-        "schema_rejections": 3,
+        "elapsed": 7.165300130844116,
+        "schema_rejections": 1,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1589,8 +1597,8 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 12.045968055725098,
-        "schema_rejections": 3,
+        "elapsed": 556.7072134017944,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1605,8 +1613,8 @@
         ],
         "final_success": false,
         "total_attempts": 3,
-        "elapsed": 21.515820026397705,
-        "schema_rejections": 3,
+        "elapsed": 6.049708127975464,
+        "schema_rejections": 2,
         "intent_rejections": 0,
         "malformed_output": 0
       },
@@ -1616,13 +1624,12 @@
         "detected": true,
         "attempts": [
           false,
-          false,
-          false
+          true
         ],
-        "final_success": false,
-        "total_attempts": 3,
-        "elapsed": 12.7261643409729,
-        "schema_rejections": 3,
+        "final_success": true,
+        "total_attempts": 2,
+        "elapsed": 3.963820695877075,
+        "schema_rejections": 1,
         "intent_rejections": 0,
         "malformed_output": 0
       }
@@ -1630,12 +1637,12 @@
     "summary": {
       "total": 26,
       "detected": 26,
-      "fixed": 7,
-      "success_rate": 26.923076923076923,
-      "mean_attempts": 1.7142857142857142,
-      "schema_rejection_count": 54,
+      "fixed": 9,
+      "success_rate": 34.61538461538461,
+      "mean_attempts": 1.7777777777777777,
+      "schema_rejection_count": 44,
       "intent_rejection_count": 0,
-      "token_level_malformed_output_count": 0
+      "token_level_malformed_output_count": 1
     }
   }
 }
