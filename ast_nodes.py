@@ -132,6 +132,36 @@ class Cast:
 
 
 @dataclass
+class ArrayLit:
+    elements: list
+    line: int
+    node_id: int = field(default=-1, compare=False)
+    parent_id: int | None = field(default=None, compare=False)
+    col: int = field(default=1, compare=False)
+
+
+@dataclass
+class IndexExpr:
+    array: object
+    index: object
+    line: int
+    node_id: int = field(default=-1, compare=False)
+    parent_id: int | None = field(default=None, compare=False)
+    col: int = field(default=1, compare=False)
+
+
+@dataclass
+class ArrayAssignment:
+    name: str
+    index: object
+    expr: object
+    line: int
+    node_id: int = field(default=-1, compare=False)
+    parent_id: int | None = field(default=None, compare=False)
+    col: int = field(default=1, compare=False)
+
+
+@dataclass
 class ErrorNode:
     expected: str
     found: str

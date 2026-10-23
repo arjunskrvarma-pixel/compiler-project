@@ -33,6 +33,8 @@ class SemanticAnalyzer:
             self._declaration(node)
         elif isinstance(node, Assignment):
             self._assignment(node)
+        elif isinstance(node, ArrayAssignment):
+            self._array_assignment(node)
         elif isinstance(node, IfStmt):
             self._if_stmt(node)
         elif isinstance(node, WhileStmt):
@@ -45,7 +47,10 @@ class SemanticAnalyzer:
             raise _error(f"variable '{node.name}' already declared", node)
         expr_type = self.type_of(node.expr)
         if expr_type != node.var_type:
-            raise _error(f"cannot assign {expr_type} to {node.var_type}", node)
+            if expr_type == "empty[]" and node.var_type.endswith("[]"):
+                pass
+            else:
+                raise _error(f"cannot assign {expr_type} to {node.var_type}", node)
         self.symbol_table[node.name] = node.var_type
 
     def _assignment(self, node: Assignment) -> None:
@@ -54,7 +59,23 @@ class SemanticAnalyzer:
         var_type = self.symbol_table[node.name]
         expr_type = self.type_of(node.expr)
         if expr_type != var_type:
+            if expr_type == "empty[]" and var_type.endswith("[]"):
+                return
             raise _error(f"cannot assign {expr_type} to {var_type}", node)
+
+    def _array_assignment(self, node: ArrayAssignment) -> None:
+        if node.name not in self.symbol_table:
+            raise _error(f"undeclared variable '{node.name}'", node)
+        var_type = self.symbol_table[node.name]
+        if not var_type.endswith("[]"):
+            raise _error(f"variable '{node.name}' is not an array", node)
+        elem_type = var_type[:-2]
+        idx_type = self.type_of(node.index)
+        if idx_type != "int":
+            raise _error(f"array index must be int, got {idx_type}", node)
+        expr_type = self.type_of(node.expr)
+        if expr_type != elem_type:
+            raise _error(f"cannot assign {expr_type} to array of {elem_type}", node)
 
     def _condition(self, node) -> None:
         cond_type = self.type_of(node.condition)
@@ -87,6 +108,23 @@ class SemanticAnalyzer:
             if node.name not in self.symbol_table:
                 raise _error(f"undeclared variable '{node.name}'", node)
             return self.symbol_table[node.name]
+        if isinstance(node, ArrayLit):
+            if not node.elements:
+                return "empty[]"
+            elem_types = [self.type_of(e) for e in node.elements]
+            first_type = elem_types[0]
+            for t in elem_types[1:]:
+                if t != first_type:
+                    raise _error(f"inconsistent array element types: {first_type} and {t}", node)
+            return f"{first_type}[]"
+        if isinstance(node, IndexExpr):
+            arr_type = self.type_of(node.array)
+            if not arr_type.endswith("[]"):
+                raise _error(f"cannot index non-array type {arr_type}", node)
+            idx_type = self.type_of(node.index)
+            if idx_type != "int":
+                raise _error(f"array index must be int, got {idx_type}", node)
+            return arr_type[:-2]
         if isinstance(node, BinaryOp):
             return self._binary_type(node)
         if isinstance(node, UnaryOp):

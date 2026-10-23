@@ -85,7 +85,7 @@ PREVIOUS ATTEMPTS:
 {history}
 Return only JSON: {{"explanation":"...","edits":[{{"op":"SET_FIELD","target":1,"field":"op","value":"=="}}]}}
 Allowed operations: REPLACE_NODE, INSERT_STMT, DELETE_NODE, SET_FIELD. Use at most 5 edits.
-Node kinds: Declaration, Assignment, IfStmt(condition, body, else_body: list or IfStmt or null), WhileStmt, PrintStmt, BinaryOp(op, left, right), UnaryOp(op "-" or "!", operand), Identifier, Number, StringLit, BoolLit, Cast.
+Node kinds: Declaration, Assignment, ArrayAssignment(name, index, expr), IfStmt(condition, body, else_body: list or IfStmt or null), WhileStmt, PrintStmt, BinaryOp(op, left, right), UnaryOp(op "-" or "!", operand), Identifier, Number, StringLit, BoolLit, Cast, ArrayLit(elements), IndexExpr(array, index).
 INSERT_STMT may set "branch": "else" to insert into an IfStmt else block.
 """
 

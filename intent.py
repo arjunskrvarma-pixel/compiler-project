@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ast_nodes import Assignment, BinaryOp, BoolLit, Declaration, Identifier, IfStmt, Number, PrintStmt, StringLit, UnaryOp, WhileStmt, child_nodes, index_nodes
+from ast_nodes import ArrayAssignment, Assignment, BinaryOp, BoolLit, Declaration, Identifier, IfStmt, Number, PrintStmt, StringLit, UnaryOp, WhileStmt, child_nodes, index_nodes
 from unparser import pretty_print
 
 
@@ -47,7 +47,7 @@ def fingerprint(program_ast, protected_region=None):
     def visit_stmt(node, depth=0):
         if node.node_id in ignored:
             return
-        label = {Declaration: "DECL", Assignment: "ASSIGN", IfStmt: "IF", WhileStmt: "WHILE", PrintStmt: "PRINT"}.get(type(node))
+        label = {Declaration: "DECL", Assignment: "ASSIGN", ArrayAssignment: "ASSIGN", IfStmt: "IF", WhileStmt: "WHILE", PrintStmt: "PRINT"}.get(type(node))
         if label:
             skeleton.append((depth, label))
         if isinstance(node, (IfStmt, WhileStmt)):
@@ -56,9 +56,11 @@ def fingerprint(program_ast, protected_region=None):
                 visit_stmt(child, depth + 1)
             if isinstance(node, IfStmt):
                 visit_else(node.else_body, depth)
-        elif isinstance(node, (Declaration, Assignment)):
+        elif isinstance(node, (Declaration, Assignment, ArrayAssignment)):
             assignments.append((node.node_id, node.name))
-            dependencies.append((node.node_id, node.name, tuple(sorted(_identifiers(node.expr))), tuple(sorted(_operators(node.expr)))))
+            deps = _identifiers(node.expr) | (_identifiers(node.index) if hasattr(node, "index") else set())
+            ops = _operators(node.expr) | (_operators(node.index) if hasattr(node, "index") else set())
+            dependencies.append((node.node_id, node.name, tuple(sorted(deps)), tuple(sorted(ops))))
         elif isinstance(node, PrintStmt):
             prints.append((node.node_id, _normalized(node.expr)))
 

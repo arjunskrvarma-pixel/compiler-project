@@ -68,14 +68,27 @@ class Parser:
 
     def _declaration(self):
         type_tok = self._consume(*TYPE_TOKENS, expected="type")
+        var_type = type_tok.value
+        if self._check("LBRACKET"):
+            self._consume("LBRACKET", expected="LBRACKET")
+            self._consume("RBRACKET", expected="RBRACKET")
+            var_type = f"{var_type}[]"
         name_tok = self._consume("ID", expected="ID")
         self._consume("ASSIGN", expected="ASSIGN")
         expr = self._expression()
         self._consume("SEMI", expected="SEMI")
-        return Declaration(type_tok.value, name_tok.value, expr, type_tok.line, col=type_tok.col)
+        return Declaration(var_type, name_tok.value, expr, type_tok.line, col=type_tok.col)
 
     def _assignment(self):
         name_tok = self._consume("ID", expected="ID")
+        if self._check("LBRACKET"):
+            self._consume("LBRACKET", expected="LBRACKET")
+            index = self._expression()
+            self._consume("RBRACKET", expected="RBRACKET")
+            self._consume("ASSIGN", expected="ASSIGN")
+            expr = self._expression()
+            self._consume("SEMI", expected="SEMI")
+            return ArrayAssignment(name_tok.value, index, expr, name_tok.line, col=name_tok.col)
         self._consume("ASSIGN", expected="ASSIGN")
         expr = self._expression()
         self._consume("SEMI", expected="SEMI")
@@ -159,10 +172,31 @@ class Parser:
             op_tok = self._advance()
             operand = self._unary()
             return UnaryOp(UNARY_OPS[op_tok.type], operand, op_tok.line, col=op_tok.col)
-        return self._primary()
+        return self._postfix()
+
+    def _postfix(self):
+        node = self._primary()
+        while self._check("LBRACKET"):
+            tok = self._advance()
+            index = self._expression()
+            self._consume("RBRACKET", expected="RBRACKET")
+            node = IndexExpr(node, index, tok.line, col=tok.col)
+        return node
 
     def _primary(self):
         tok = self._peek()
+        if tok.type == "LBRACKET":
+            self._advance()
+            elements = []
+            if not self._check("RBRACKET"):
+                elements.append(self._expression())
+                while self._check("COMMA"):
+                    self._advance()
+                    if self._check("RBRACKET"):
+                        break
+                    elements.append(self._expression())
+            self._consume("RBRACKET", expected="RBRACKET")
+            return ArrayLit(elements, tok.line, col=tok.col)
         if tok.type == "NUMBER":
             self._advance()
             return Number(tok.value, tok.line, col=tok.col)

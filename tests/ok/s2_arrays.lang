@@ -1,0 +1,6 @@
+int[] numbers = [10, 20, 30];
+numbers[1] = 99;
+int total = numbers[0] + numbers[1];
+print(total);
+string[] names = ["alice", "bob"];
+print(names[0]);

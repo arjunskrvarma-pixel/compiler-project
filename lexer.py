@@ -35,6 +35,9 @@ OPS = [
     (")", "RPAREN"),
     ("{", "LBRACE"),
     ("}", "RBRACE"),
+    ("[", "LBRACKET"),
+    ("]", "RBRACKET"),
+    (",", "COMMA"),
     (";", "SEMI"),
 ]
 

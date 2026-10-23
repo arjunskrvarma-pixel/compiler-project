@@ -1,9 +1,12 @@
-from ast_nodes import ErrorNode, index_nodes
+import pytest
+from ast_nodes import ArrayAssignment, ArrayLit, ErrorNode, IndexExpr, index_nodes
 from ast_patch import PatchError, apply_edits
 from intent import IntentFingerprint, compare, fingerprint
 from lexer import lex
 from parser import Parser
+from semantic import SemanticAnalyzer, SemanticError
 from unparser import pretty_print
+from verifier import verify_fix
 
 
 def parse(source):
@@ -244,3 +247,60 @@ def test_stage1_patch_else_branch_and_unary():
         apply_edits(ast, [{"op": "REPLACE_NODE", "target": else_print.node_id, "node": {"type": "UnaryOp", "op": "~", "operand": {"type": "Number", "value": "1"}}}])
     built = apply_edits(ast, [{"op": "REPLACE_NODE", "target": if_node.node_id, "node": {"type": "IfStmt", "condition": {"type": "BoolLit", "value": True}, "body": [], "else_body": {"type": "IfStmt", "condition": {"type": "BoolLit", "value": False}, "body": []}}}])
     assert "} else if (false) {" in pretty_print(built)
+
+
+def test_array_declaration_and_indexing():
+    src = "int[] arr = [10, 20, 30]; int first = arr[0]; print(first);"
+    ok, err, err_type = verify_fix(src)
+    assert ok, f"Expected verify_fix to pass, got: {err_type} - {err}"
+    ast = parse(src)
+    assert isinstance(ast.statements[0].expr, ArrayLit)
+    assert isinstance(ast.statements[1].expr, IndexExpr)
+    assert pretty_print(ast) == "int[] arr = [10, 20, 30];\nint first = arr[0];\nprint(first);"
+
+
+def test_array_mutation_and_empty_literal():
+    src = "string[] names = [\"alice\", \"bob\"]; names[1] = \"charlie\"; bool[] flags = [];"
+    ok, err, err_type = verify_fix(src)
+    assert ok, f"Expected verify_fix to pass, got: {err_type} - {err}"
+    ast = parse(src)
+    assert isinstance(ast.statements[1], ArrayAssignment)
+    assert pretty_print(ast) == "string[] names = [\"alice\", \"bob\"];\nnames[1] = \"charlie\";\nbool[] flags = [];"
+
+
+def test_array_semantic_type_errors():
+    with pytest.raises(SemanticError) as exc1:
+        SemanticAnalyzer().analyze(parse("int x = 5; int y = x[0];"))
+    assert "cannot index non-array type" in str(exc1.value)
+
+    with pytest.raises(SemanticError) as exc2:
+        SemanticAnalyzer().analyze(parse("int[] a = [1, 2]; int y = a[true];"))
+    assert "array index must be int" in str(exc2.value)
+
+    with pytest.raises(SemanticError) as exc3:
+        SemanticAnalyzer().analyze(parse("int[] a = [1, \"text\"];"))
+    assert "inconsistent array element types" in str(exc3.value)
+
+    with pytest.raises(SemanticError) as exc4:
+        SemanticAnalyzer().analyze(parse("int[] a = [1, 2]; a[0] = false;"))
+    assert "cannot assign bool to array of int" in str(exc4.value)
+
+
+def test_array_ast_patch_and_intent():
+    ast = parse("int[] a = [1, 2]; a[0] = 3;")
+    nodes = index_nodes(ast)
+    idx_assign = ast.statements[1]
+    patched = apply_edits(ast, [{
+        "op": "REPLACE_NODE",
+        "target": idx_assign.node_id,
+        "node": {
+            "type": "ArrayAssignment",
+            "name": "a",
+            "index": {"type": "Number", "value": "1"},
+            "expr": {"type": "Number", "value": "99"}
+        }
+    }])
+    assert "a[1] = 99;" in pretty_print(patched)
+    fp_orig = fingerprint(ast)
+    fp_repaired = fingerprint(parse(pretty_print(ast)))
+    assert compare(fp_orig, fp_repaired) == []

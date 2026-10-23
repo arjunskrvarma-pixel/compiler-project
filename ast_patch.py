@@ -1,15 +1,16 @@
 from copy import deepcopy
 
-from ast_nodes import Assignment, BinaryOp, BoolLit, Cast, Declaration, Identifier, IfStmt, Number, PrintStmt, Program, StringLit, UnaryOp, WhileStmt, assign_node_ids, child_nodes, index_nodes
+from ast_nodes import ArrayAssignment, ArrayLit, Assignment, BinaryOp, BoolLit, Cast, Declaration, Identifier, IfStmt, IndexExpr, Number, PrintStmt, Program, StringLit, UnaryOp, WhileStmt, assign_node_ids, child_nodes, index_nodes
 
 OPS = {"+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||"}
 UNARY_OPS = {"-", "!"}
-TYPES = {"int", "float", "bool", "string"}
+TYPES = {"int", "float", "bool", "string", "int[]", "float[]", "bool[]", "string[]"}
 NODE_TYPES = {
     "Program": Program, "Declaration": Declaration, "Assignment": Assignment,
-    "IfStmt": IfStmt, "WhileStmt": WhileStmt, "PrintStmt": PrintStmt,
-    "BinaryOp": BinaryOp, "Identifier": Identifier, "Number": Number,
-    "StringLit": StringLit, "BoolLit": BoolLit, "Cast": Cast, "UnaryOp": UnaryOp,
+    "ArrayAssignment": ArrayAssignment, "IfStmt": IfStmt, "WhileStmt": WhileStmt,
+    "PrintStmt": PrintStmt, "BinaryOp": BinaryOp, "Identifier": Identifier,
+    "Number": Number, "StringLit": StringLit, "BoolLit": BoolLit,
+    "Cast": Cast, "UnaryOp": UnaryOp, "ArrayLit": ArrayLit, "IndexExpr": IndexExpr,
 }
 
 
@@ -60,13 +61,19 @@ def node_from_json(data):
         if not isinstance(value, bool):
             raise PatchError("BoolLit value must be bool")
         return BoolLit(value, line)
+    if kind == "ArrayLit":
+        return ArrayLit([node_from_json(item) for item in _list(data, "elements")], line)
+    if kind == "IndexExpr":
+        return IndexExpr(node_from_json(_value(data, "array")), node_from_json(_value(data, "index")), line)
+    if kind == "ArrayAssignment":
+        return ArrayAssignment(_string(data, "name"), node_from_json(_value(data, "index")), node_from_json(_value(data, "expr")), line)
     target_type = _string(data, "target_type")
     if target_type not in TYPES:
         raise PatchError("invalid type name")
     return Cast(target_type, node_from_json(_value(data, "expr")), line)
 
 
-STATEMENT_TYPES = (Declaration, Assignment, IfStmt, WhileStmt, PrintStmt)
+STATEMENT_TYPES = (Declaration, Assignment, IfStmt, WhileStmt, PrintStmt, ArrayAssignment)
 
 
 def _statements(data, key):

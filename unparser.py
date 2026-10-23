@@ -1,4 +1,4 @@
-from ast_nodes import Assignment, BinaryOp, BoolLit, Cast, Declaration, ErrorNode, Identifier, IfStmt, Number, PrintStmt, Program, StringLit, UnaryOp, WhileStmt
+from ast_nodes import ArrayAssignment, ArrayLit, Assignment, BinaryOp, BoolLit, Cast, Declaration, ErrorNode, Identifier, IfStmt, IndexExpr, Number, PrintStmt, Program, StringLit, UnaryOp, WhileStmt
 
 
 def pretty_print(node) -> str:
@@ -8,6 +8,8 @@ def pretty_print(node) -> str:
         return f"{node.var_type} {node.name} = {pretty_print(node.expr)};"
     if isinstance(node, Assignment):
         return f"{node.name} = {pretty_print(node.expr)};"
+    if isinstance(node, ArrayAssignment):
+        return f"{node.name}[{pretty_print(node.index)}] = {pretty_print(node.expr)};"
     if isinstance(node, IfStmt):
         text = f"if ({pretty_print(node.condition)}) {{\n{_block(node.body)}\n}}"
         if isinstance(node.else_body, IfStmt):
@@ -33,6 +35,10 @@ def pretty_print(node) -> str:
         return "true" if node.value else "false"
     if isinstance(node, Cast):
         return f"{node.target_type}({pretty_print(node.expr)})"
+    if isinstance(node, ArrayLit):
+        return f"[{', '.join(pretty_print(item) for item in node.elements)}]"
+    if isinstance(node, IndexExpr):
+        return f"{pretty_print(node.array)}[{pretty_print(node.index)}]"
     if isinstance(node, ErrorNode):
         return ""
     raise TypeError(f"cannot print {type(node).__name__}")
