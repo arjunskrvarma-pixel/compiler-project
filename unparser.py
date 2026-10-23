@@ -1,4 +1,4 @@
-from ast_nodes import Assignment, BinaryOp, BoolLit, Cast, Declaration, ErrorNode, Identifier, IfStmt, Number, PrintStmt, Program, StringLit, WhileStmt
+from ast_nodes import Assignment, BinaryOp, BoolLit, Cast, Declaration, ErrorNode, Identifier, IfStmt, Number, PrintStmt, Program, StringLit, UnaryOp, WhileStmt
 
 
 def pretty_print(node) -> str:
@@ -9,13 +9,20 @@ def pretty_print(node) -> str:
     if isinstance(node, Assignment):
         return f"{node.name} = {pretty_print(node.expr)};"
     if isinstance(node, IfStmt):
-        return f"if ({pretty_print(node.condition)}) {{\n{_block(node.body)}\n}}"
+        text = f"if ({pretty_print(node.condition)}) {{\n{_block(node.body)}\n}}"
+        if isinstance(node.else_body, IfStmt):
+            text += f" else {pretty_print(node.else_body)}"
+        elif node.else_body is not None:
+            text += f" else {{\n{_block(node.else_body)}\n}}"
+        return text
     if isinstance(node, WhileStmt):
         return f"while ({pretty_print(node.condition)}) {{\n{_block(node.body)}\n}}"
     if isinstance(node, PrintStmt):
         return f"print({pretty_print(node.expr)});"
     if isinstance(node, BinaryOp):
         return f"({pretty_print(node.left)} {node.op} {pretty_print(node.right)})"
+    if isinstance(node, UnaryOp):
+        return f"({node.op}{pretty_print(node.operand)})"
     if isinstance(node, Identifier):
         return node.name
     if isinstance(node, Number):

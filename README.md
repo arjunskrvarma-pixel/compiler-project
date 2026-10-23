@@ -62,3 +62,12 @@ python -m pytest tests -q
 - The semantic analyzer currently uses one symbol table, so block-local scope is not modeled.
 - Intent comparison protects the represented AST semantics; it cannot infer programmer intent absent from source.
 - Repair quality still depends on the local model, but model output is never accepted without schema and compiler verification.
+
+## Web Frontend (LangFix IDE)
+
+```bash
+python -m pip install fastapi uvicorn
+python server.py
+```
+
+Open http://127.0.0.1:8000. The left panel is the editor (live diagnostics, error squiggle, inline tooltip); the right panel has Errors (error card, symbol table, AST context), Repair Attempts (timeline with intent/schema rejections) and Corrected Code (verified fix, diff view, apply/copy/download). The top bar selects AST/Text repair, the intent guard and the Ollama model. API: `POST /api/compile`, `POST /api/repair`, `POST /api/format`, `GET /api/examples`, `GET /api/health`. Files: `server.py`, `web/`.

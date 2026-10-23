@@ -1,0 +1,2 @@
+string a = "x";
+bool b = a <= "y";

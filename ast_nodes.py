@@ -39,6 +39,7 @@ class IfStmt:
     condition: object
     body: list
     line: int
+    else_body: object = None
     node_id: int = field(default=-1, compare=False)
     parent_id: int | None = field(default=None, compare=False)
     col: int = field(default=1, compare=False)
@@ -68,6 +69,16 @@ class BinaryOp:
     op: str
     left: object
     right: object
+    line: int
+    node_id: int = field(default=-1, compare=False)
+    parent_id: int | None = field(default=None, compare=False)
+    col: int = field(default=1, compare=False)
+
+
+@dataclass
+class UnaryOp:
+    op: str
+    operand: object
     line: int
     node_id: int = field(default=-1, compare=False)
     parent_id: int | None = field(default=None, compare=False)

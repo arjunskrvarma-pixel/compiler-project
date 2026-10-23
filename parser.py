@@ -3,9 +3,11 @@ from ast_nodes import *
 
 TYPE_TOKENS = ("INT", "FLOAT", "BOOL", "STRING_T")
 STMT_START = TYPE_TOKENS + ("IF", "WHILE", "PRINT", "ID")
-CMP_OPS = {"EQ": "==", "NEQ": "!=", "LT": "<", "GT": ">"}
+EQUALITY_OPS = {"EQ": "==", "NEQ": "!="}
+CMP_OPS = {"LT": "<", "GT": ">", "LE": "<=", "GE": ">="}
 TERM_OPS = {"PLUS": "+", "MINUS": "-"}
-FACTOR_OPS = {"STAR": "*", "SLASH": "/"}
+FACTOR_OPS = {"STAR": "*", "SLASH": "/", "PERCENT": "%"}
+UNARY_OPS = {"MINUS": "-", "NOT": "!"}
 
 
 class ParseError(Exception):
@@ -85,7 +87,11 @@ class Parser:
         cond = self._expression()
         self._consume("RPAREN", expected="RPAREN")
         body = self._block()
-        return IfStmt(cond, body, tok.line, col=tok.col)
+        else_body = None
+        if self._check("ELSE"):
+            self._advance()
+            else_body = self._if_stmt() if self._check("IF") else self._block()
+        return IfStmt(cond, body, tok.line, else_body, col=tok.col)
 
     def _while_stmt(self):
         tok = self._consume("WHILE", expected="WHILE")
@@ -108,6 +114,8 @@ class Parser:
         body = []
         while not self._at_end() and not self._check("RBRACE"):
             try:
+                if self._check("ELSE"):
+                    raise self._error("RBRACE", self._peek())
                 body.append(self._statement())
             except ParseError as e:
                 self.errors.append(e)
@@ -118,33 +126,39 @@ class Parser:
         return body
 
     def _expression(self):
-        return self._comparison()
+        return self._or()
+
+    def _binary_level(self, next_level, ops):
+        node = next_level()
+        while self._check(*ops):
+            op_tok = self._advance()
+            right = next_level()
+            node = BinaryOp(ops[op_tok.type], node, right, op_tok.line, col=op_tok.col)
+        return node
+
+    def _or(self):
+        return self._binary_level(self._and, {"OR": "||"})
+
+    def _and(self):
+        return self._binary_level(self._equality, {"AND": "&&"})
+
+    def _equality(self):
+        return self._binary_level(self._comparison, EQUALITY_OPS)
 
     def _comparison(self):
-        node = self._term()
-        while self._check("EQ", "NEQ", "LT", "GT"):
-            op_tok = self._advance()
-            right = self._term()
-            node = BinaryOp(CMP_OPS[op_tok.type], node, right, op_tok.line, col=op_tok.col)
-        return node
+        return self._binary_level(self._term, CMP_OPS)
 
     def _term(self):
-        node = self._factor()
-        while self._check("PLUS", "MINUS"):
-            op_tok = self._advance()
-            right = self._factor()
-            node = BinaryOp(TERM_OPS[op_tok.type], node, right, op_tok.line, col=op_tok.col)
-        return node
+        return self._binary_level(self._factor, TERM_OPS)
 
     def _factor(self):
-        node = self._unary()
-        while self._check("STAR", "SLASH"):
-            op_tok = self._advance()
-            right = self._unary()
-            node = BinaryOp(FACTOR_OPS[op_tok.type], node, right, op_tok.line, col=op_tok.col)
-        return node
+        return self._binary_level(self._unary, FACTOR_OPS)
 
     def _unary(self):
+        if self._check(*UNARY_OPS):
+            op_tok = self._advance()
+            operand = self._unary()
+            return UnaryOp(UNARY_OPS[op_tok.type], operand, op_tok.line, col=op_tok.col)
         return self._primary()
 
     def _primary(self):

@@ -5,6 +5,16 @@ import ollama
 from errors import ErrorRecord
 
 _MODEL = "qwen2.5-coder:3b"
+LANGUAGE_SUMMARY = """LANGUAGE GRAMMAR:
+  statement  -> type ID "=" expr ";" | ID "=" expr ";" | if | while | print
+  if         -> "if" "(" expr ")" block ( "else" ( if | block ) )?
+  while      -> "while" "(" expr ")" block
+  print      -> "print" "(" expr ")" ";"
+  block      -> "{" statement* "}"
+  expr precedence (low to high): || , && , == != , < > <= >= , + - , * / % , unary - ! , primary
+  primary    -> NUMBER | STRING | true | false | ID | "(" expr ")" | type "(" expr ")"
+  types: int, float, bool, string. Casts use function syntax int(x), float(x), bool(x), never C-style.
+TYPE RULES: && || ! need bool; % needs int and int; unary - needs int or float; < > <= >= need two identical numeric types; == != need identical types; conditions must be bool; no implicit conversion on assignment."""
 _FALLBACK = {"explanation": "LLM returned invalid format", "fixed_code": ""}
 
 
@@ -40,8 +50,7 @@ def call_llm_prompt(prompt: str, required_fields: tuple[str, ...], fallback: dic
 def call_llm(error_record: ErrorRecord) -> dict:
     prompt = f"""You are a compiler error correction assistant.
 A programmer wrote code in a small statically-typed language.
-Casts use FUNCTION syntax: int(expr), float(expr), bool(expr).
-Do NOT use C-style (int)expr. Only int(x), float(x), bool(x) are valid.
+{LANGUAGE_SUMMARY}
 
 ERROR TYPE: {error_record.error_type}
 ERROR MESSAGE: {error_record.message}

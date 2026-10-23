@@ -1,10 +1,11 @@
+import re
 from dataclasses import dataclass, field
 
 from ast_context import export_context
 from ast_patch import PatchError, apply_edits
 from errors import ErrorRecord
 from intent import compare, fingerprint
-from llm import _FALLBACK, call_llm_prompt
+from llm import _FALLBACK, LANGUAGE_SUMMARY, call_llm_prompt
 from parser import Parser
 from lexer import lex
 from unparser import pretty_print
@@ -38,13 +39,21 @@ def _number_source(source):
     return "\n".join(f"  {i + 1} | {line}" for i, line in enumerate(source.splitlines()))
 
 
+def _remove_copied_line_numbers(source):
+    """Remove display-only `N | ` prefixes copied from a diagnostic prompt."""
+    lines = source.splitlines()
+    # Strip each independently: models sometimes omit a label on a blank line
+    # or add a prose-free, unnumbered final line to an otherwise numbered fix.
+    return "\n".join(re.sub(r"^\s*\d+\s*\|\s?", "", line) for line in lines)
+
+
 def build_error_record_from_string(message, error_type, source):
     return ErrorRecord(error_type, message, 1, 0, "", _number_source(source), {}, "")
 
 
 def _base_prompt(error):
     return f"""You are a compiler error correction assistant.
-Casts use int(expr), float(expr), bool(expr), never C-style casts.
+{LANGUAGE_SUMMARY}
 ERROR TYPE: {error.error_type}
 ERROR MESSAGE: {error.message}
 LINE: {error.line}, COLUMN: {error.column}
@@ -61,6 +70,9 @@ def build_repair_prompt(original_source, current_error, attempts_history):
 {history}
 ORIGINAL SOURCE:
 {_number_source(original_source)}
+The `N |` prefixes above are diagnostic line labels only. Your `fixed_code` must
+contain raw language source: do not include line numbers, `|`, Markdown fences,
+or any explanation inside `fixed_code`.
 Respond ONLY as JSON: {{"explanation": "...", "fixed_code": "..."}}
 """
 
@@ -73,6 +85,8 @@ PREVIOUS ATTEMPTS:
 {history}
 Return only JSON: {{"explanation":"...","edits":[{{"op":"SET_FIELD","target":1,"field":"op","value":"=="}}]}}
 Allowed operations: REPLACE_NODE, INSERT_STMT, DELETE_NODE, SET_FIELD. Use at most 5 edits.
+Node kinds: Declaration, Assignment, IfStmt(condition, body, else_body: list or IfStmt or null), WhileStmt, PrintStmt, BinaryOp(op, left, right), UnaryOp(op "-" or "!", operand), Identifier, Number, StringLit, BoolLit, Cast.
+INSERT_STMT may set "branch": "else" to insert into an IfStmt else block.
 """
 
 
@@ -88,9 +102,23 @@ def _call_ast(prompt, model=None):
 def self_healing_repair(source, initial_error, max_attempts=3, repair_mode="ast", intent_guard=True, original_ast=None, model=None):
     program = original_ast or initial_error.ast
     mode = repair_mode
-    if mode == "ast" and (initial_error.error_type == "LEXICAL" or program is None):
+    # A semicolon is a token delimiter rather than a meaningful AST node.
+    # Use source-level repair for this targeted syntax error, avoiding invalid
+    # attempts to insert a whole statement into an otherwise valid partial AST.
+    missing_semicolon = (
+        initial_error.error_type == "SYNTAX"
+        and initial_error.grammar_rule == "SEMI"
+    )
+    if mode == "ast" and (initial_error.error_type == "LEXICAL" or program is None or missing_semicolon):
         mode = "text_fallback"
-    original_fingerprint = fingerprint(program, initial_error.target_node_id) if program is not None else None
+    # The partial AST contains an ErrorNode at a missing semicolon, so it is
+    # not a trustworthy baseline for intent comparison. Candidate verification
+    # still runs the full deterministic compiler pipeline.
+    original_fingerprint = (
+        fingerprint(program, initial_error.target_node_id)
+        if program is not None and not missing_semicolon
+        else None
+    )
     attempts = []
     current_error = initial_error
     for number in range(1, max_attempts + 1):
@@ -106,7 +134,7 @@ def self_healing_repair(source, initial_error, max_attempts=3, repair_mode="ast"
                 continue
         else:
             data = _call_text(build_repair_prompt(source, current_error, attempts), model)
-            explanation, candidate, edits = data["explanation"], data["fixed_code"], []
+            explanation, candidate, edits = data["explanation"], _remove_copied_line_numbers(data["fixed_code"]), []
             if not candidate:
                 attempts.append(RepairAttempt(number, "", explanation, False, "LLM returned empty fix", "SYNTAX", [], [], "malformed"))
                 continue

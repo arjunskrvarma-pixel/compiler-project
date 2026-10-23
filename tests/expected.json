@@ -102,5 +102,41 @@
   "tc26.lang": {
     "category": "syntax",
     "should_fix": true
+  },
+  "tc27.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc28.lang": {
+    "category": "syntax",
+    "should_fix": true
+  },
+  "tc29.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc30.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc31.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc32.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc33.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc34.lang": {
+    "category": "semantic",
+    "should_fix": true
+  },
+  "tc35.lang": {
+    "category": "syntax",
+    "should_fix": true
   }
 }

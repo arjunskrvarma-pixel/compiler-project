@@ -1,0 +1,11 @@
+int i = 0;
+while (i < 5) {
+  if (i % 2 == 0) {
+    print(i);
+  } else {
+    print(-i);
+  }
+  i = i + 1;
+}
+float f = -2.5;
+print(-f);

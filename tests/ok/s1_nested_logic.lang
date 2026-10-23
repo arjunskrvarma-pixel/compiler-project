@@ -1,0 +1,9 @@
+int x = 7;
+bool even = x % 2 == 0;
+if (!even && x > 0 || x <= -10) {
+  if (x != 3) {
+    print(-x);
+  } else {
+    print(x);
+  }
+}

@@ -19,7 +19,7 @@ def export_context(program, error_record):
         node = nodes[node_id]
         fields = []
         for key, value in vars(node).items():
-            if key not in {"node_id", "parent_id", "line", "col", "body", "statements", "expr", "condition", "left", "right"}:
+            if key not in {"node_id", "parent_id", "line", "col", "body", "statements", "expr", "condition", "left", "right", "else_body", "operand"}:
                 fields.append(f"{key}={value!r}")
         lines.append(f"#{node_id} {type(node).__name__}({', '.join(fields)})")
     return "\n".join(lines)

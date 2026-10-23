@@ -27,7 +27,7 @@ def build_error_record(error: Exception, source: str, symbol_table: dict) -> Err
         error_type, column = "SYNTAX", error.col
         grammar_rule = error.expected if error.expected else ""
     elif isinstance(error, SemanticError):
-        error_type, column = "SEMANTIC", 0
+        error_type, column = "SEMANTIC", getattr(error, "col", 0)
         grammar_rule = ""
     else:
         error_type, column = "SEMANTIC", 0

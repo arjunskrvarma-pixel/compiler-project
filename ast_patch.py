@@ -1,14 +1,15 @@
 from copy import deepcopy
 
-from ast_nodes import Assignment, BinaryOp, BoolLit, Cast, Declaration, Identifier, IfStmt, Number, PrintStmt, Program, StringLit, WhileStmt, assign_node_ids, child_nodes, index_nodes
+from ast_nodes import Assignment, BinaryOp, BoolLit, Cast, Declaration, Identifier, IfStmt, Number, PrintStmt, Program, StringLit, UnaryOp, WhileStmt, assign_node_ids, child_nodes, index_nodes
 
-OPS = {"+", "-", "*", "/", "==", "!=", "<", ">"}
+OPS = {"+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||"}
+UNARY_OPS = {"-", "!"}
 TYPES = {"int", "float", "bool", "string"}
 NODE_TYPES = {
     "Program": Program, "Declaration": Declaration, "Assignment": Assignment,
     "IfStmt": IfStmt, "WhileStmt": WhileStmt, "PrintStmt": PrintStmt,
     "BinaryOp": BinaryOp, "Identifier": Identifier, "Number": Number,
-    "StringLit": StringLit, "BoolLit": BoolLit, "Cast": Cast,
+    "StringLit": StringLit, "BoolLit": BoolLit, "Cast": Cast, "UnaryOp": UnaryOp,
 }
 
 
@@ -32,9 +33,15 @@ def node_from_json(data):
         return Declaration(var_type, _string(data, "name"), node_from_json(_value(data, "expr")), line)
     if kind == "Assignment":
         return Assignment(_string(data, "name"), node_from_json(_value(data, "expr")), line)
-    if kind in {"IfStmt", "WhileStmt"}:
-        cls = NODE_TYPES[kind]
-        return cls(node_from_json(_value(data, "condition")), [node_from_json(item) for item in _list(data, "body")], line)
+    if kind == "IfStmt":
+        return IfStmt(node_from_json(_value(data, "condition")), _statements(data, "body"), line, _else_from_json(data.get("else_body")))
+    if kind == "WhileStmt":
+        return WhileStmt(node_from_json(_value(data, "condition")), _statements(data, "body"), line)
+    if kind == "UnaryOp":
+        op = _string(data, "op")
+        if op not in UNARY_OPS:
+            raise PatchError("invalid unary operator")
+        return UnaryOp(op, node_from_json(_value(data, "operand")), line)
     if kind == "PrintStmt":
         return PrintStmt(node_from_json(_value(data, "expr")), line)
     if kind == "BinaryOp":
@@ -59,6 +66,39 @@ def node_from_json(data):
     return Cast(target_type, node_from_json(_value(data, "expr")), line)
 
 
+STATEMENT_TYPES = (Declaration, Assignment, IfStmt, WhileStmt, PrintStmt)
+
+
+def _statements(data, key):
+    result = [node_from_json(item) for item in _list(data, key)]
+    if not all(isinstance(item, STATEMENT_TYPES) for item in result):
+        raise PatchError(f"{key} must contain only statements")
+    return result
+
+
+def _else_from_json(data):
+    if data is None:
+        return None
+    if isinstance(data, list):
+        return _statements({"else_body": data}, "else_body")
+    node = node_from_json(data)
+    if not isinstance(node, IfStmt):
+        raise PatchError("else_body must be a statement list or an IfStmt")
+    return node
+
+
+def _statement_list(parent, branch):
+    if isinstance(parent, Program):
+        return parent.statements
+    if isinstance(parent, IfStmt) and branch == "else":
+        if parent.else_body is None:
+            parent.else_body = []
+        if not isinstance(parent.else_body, list):
+            raise PatchError("else branch is an else-if chain")
+        return parent.else_body
+    return parent.body
+
+
 def apply_edits(program, edits):
     if not isinstance(edits, list) or len(edits) > 5:
         raise PatchError("edits must contain at most 5 operations")
@@ -79,10 +119,13 @@ def _apply_one(root, edit):
         index = edit.get("index")
         if not isinstance(parent, (Program, IfStmt, WhileStmt)) or not isinstance(index, int):
             raise PatchError("INSERT_STMT requires a statement-list parent and integer index")
+        branch = edit.get("branch", "body")
+        if branch not in {"body", "else"}:
+            raise PatchError("INSERT_STMT branch must be body or else")
         node = node_from_json(edit.get("node"))
-        if not isinstance(node, (Declaration, Assignment, IfStmt, WhileStmt, PrintStmt)):
+        if not isinstance(node, STATEMENT_TYPES):
             raise PatchError("INSERT_STMT node must be a statement")
-        body = parent.statements if isinstance(parent, Program) else parent.body
+        body = _statement_list(parent, branch)
         if not 0 <= index <= len(body):
             raise PatchError("INSERT_STMT index out of range")
         body.insert(index, node)
@@ -101,10 +144,12 @@ def _apply_one(root, edit):
         return
     field = edit.get("field")
     value = edit.get("value")
-    permitted = {BinaryOp: {"op"}, Declaration: {"var_type", "name"}, Assignment: {"name"}, Identifier: {"name"}, Number: {"value"}, StringLit: {"value"}, BoolLit: {"value"}, Cast: {"target_type"}}
+    permitted = {BinaryOp: {"op"}, Declaration: {"var_type", "name"}, Assignment: {"name"}, Identifier: {"name"}, Number: {"value"}, StringLit: {"value"}, BoolLit: {"value"}, Cast: {"target_type"}, UnaryOp: {"op"}}
     if field not in permitted.get(type(target), set()):
         raise PatchError("unknown or invalid SET_FIELD field")
-    if field == "op" and value not in OPS:
+    if field == "op" and isinstance(target, UnaryOp) and value not in UNARY_OPS:
+        raise PatchError("invalid unary operator")
+    if field == "op" and isinstance(target, BinaryOp) and value not in OPS:
         raise PatchError("invalid operator")
     if field in {"var_type", "target_type"} and value not in TYPES:
         raise PatchError("invalid type name")
@@ -115,13 +160,27 @@ def _apply_one(root, edit):
     setattr(target, field, value)
 
 
+def _index_of(items, target):
+    for position, item in enumerate(items):
+        if item is target:
+            return position
+    return None
+
+
 def _replace(parent, old, new):
-    for name in ("statements", "body"):
-        if hasattr(parent, name) and old in getattr(parent, name):
-            items = getattr(parent, name)
-            items[items.index(old)] = new
+    for name in ("statements", "body", "else_body"):
+        items = getattr(parent, name, None)
+        if isinstance(items, list) and _index_of(items, old) is not None:
+            if not isinstance(new, STATEMENT_TYPES):
+                raise PatchError("statement can only be replaced by a statement")
+            items[_index_of(items, old)] = new
             return
-    for name in ("expr", "condition", "left", "right"):
+    if isinstance(parent, IfStmt) and parent.else_body is old:
+        if not isinstance(new, IfStmt):
+            raise PatchError("else-if can only be replaced by an IfStmt")
+        parent.else_body = new
+        return
+    for name in ("expr", "condition", "left", "right", "operand"):
         if getattr(parent, name, None) is old:
             setattr(parent, name, new)
             return
@@ -129,10 +188,14 @@ def _replace(parent, old, new):
 
 
 def _delete(parent, target):
-    for name in ("statements", "body"):
-        if hasattr(parent, name) and target in getattr(parent, name):
-            getattr(parent, name).remove(target)
+    for name in ("statements", "body", "else_body"):
+        items = getattr(parent, name, None)
+        if isinstance(items, list) and _index_of(items, target) is not None:
+            del items[_index_of(items, target)]
             return
+    if isinstance(parent, IfStmt) and parent.else_body is target:
+        parent.else_body = None
+        return
     raise PatchError("only statements can be deleted")
 
 

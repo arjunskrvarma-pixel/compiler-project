@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LangFix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: { extend: {
+    colors: {
+      surface: "#111319", "surface-bright": "#373940",
+      "surface-container-lowest": "#0c0e14", "surface-container-low": "#191b22",
+      "surface-container": "#1e1f26", "surface-container-high": "#282a30",
+      "surface-container-highest": "#33343b",
+      "on-surface": "#e2e2eb", "on-surface-variant": "#c2c6d6",
+      outline: "#8c909f", "outline-variant": "#424753",
+      primary: "#afc6ff", "primary-container": "#528dff", "on-primary-container": "#00275f", "on-primary": "#002d6c",
+      secondary: "#f0b0ff", tertiary: "#42e09a", "tertiary-container": "#00a56c",
+      error: "#ffb4ab", "error-container": "#93000a", warn: "#ffb547"
+    },
+    fontFamily: { mono: ["JetBrains Mono", "monospace"], sans: ["Inter", "sans-serif"] }
+  } }
+};
+</script>
+<link rel="stylesheet" href="/static/app.css"/>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-sans">
+
+<header class="h-14 bg-surface-container-low flex items-center justify-between gap-3 px-3 shadow-[0_1px_8px_rgba(0,0,0,0.5)] relative z-30">
+  <div class="flex items-center gap-2 min-w-0">
+    <div class="w-8 h-8 rounded bg-primary-container/20 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">code_blocks</span></div>
+    <span class="font-semibold tracking-tight">LangFix</span>
+    <span class="hidden md:inline px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-mono text-[10px] uppercase tracking-wider leading-tight">AI-Assisted<br/>Compiler</span>
+    <div class="hidden sm:block h-5 w-px bg-surface-container-highest mx-1"></div>
+    <div class="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container-lowest font-mono text-xs">
+      <span id="dirtyDot" class="w-2 h-2 rounded-full bg-secondary hidden"></span>
+      <span class="material-symbols-outlined text-[16px] text-primary">code</span>
+      <span id="fileName">untitled.lang</span>
+    </div>
+  </div>
+
+  <div class="hidden xl:flex items-center gap-3">
+    <div class="flex items-center gap-1 bg-surface-container-lowest p-1 rounded">
+      <span class="font-mono text-[10px] text-on-surface-variant px-1 uppercase">Repair</span>
+      <div class="flex bg-surface-container-high p-0.5 rounded" id="modeToggle">
+        <button data-mode="ast" class="seg px-2 py-0.5 rounded font-mono text-[11px]">AST</button>
+        <button data-mode="text" class="seg px-2 py-0.5 rounded font-mono text-[11px]">Text</button>
+      </div>
+    </div>
+    <button id="guardToggle" class="flex items-center gap-2 px-2 py-1 rounded bg-surface-container-lowest">
+      <span class="font-mono text-[10px] text-on-surface-variant uppercase leading-tight text-left">Intent<br/>Guard</span>
+      <span class="flex items-center gap-1.5 px-1.5 py-0.5 rounded bg-surface-container-high">
+        <span id="guardDot" class="w-2 h-2 rounded-full"></span><span id="guardText" class="font-mono text-[10px]"></span>
+      </span>
+    </button>
+    <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container-lowest font-mono text-xs">
+      <span class="material-symbols-outlined text-[16px] text-on-surface-variant">neurology</span>
+      <select id="modelSelect" class="bg-transparent outline-none text-on-surface max-w-[170px]"></select>
+      <span id="ollamaBadge" class="px-1 rounded bg-surface-container-high text-on-surface-variant text-[10px]">checking…</span>
+    </label>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <label class="hidden lg:flex items-center gap-1 px-2 py-1 rounded bg-surface-container-lowest text-on-surface-variant hover:text-on-surface">
+      <span class="material-symbols-outlined text-[16px]">folder_open</span>
+      <select id="exampleSelect" class="bg-transparent outline-none text-xs max-w-[190px]"><option value="">Load Example</option></select>
+    </label>
+    <button id="uploadBtn" class="flex items-center gap-1 px-2 py-1.5 rounded bg-surface-container-high text-xs hover:bg-surface-bright">
+      <span class="material-symbols-outlined text-[16px]">upload_file</span><span class="hidden sm:inline">Upload .lang</span>
+    </button>
+    <input id="fileInput" type="file" accept=".lang,.txt" class="hidden"/>
+    <button id="compileBtn" class="flex items-center gap-2 px-3 py-1.5 rounded bg-primary-container text-on-primary-container font-semibold text-sm shadow-[0_0_14px_-1px_rgba(79,140,255,0.4)] hover:brightness-110">
+      <span class="material-symbols-outlined text-[18px]">play_arrow</span><span>Compile</span>
+      <span class="hidden sm:inline px-1 rounded bg-on-primary-container/20 font-mono text-[10px]">Ctrl+Enter</span>
+    </button>
+  </div>
+</header>
+
+<div class="xl:hidden flex flex-wrap items-center gap-2 px-3 py-2 bg-surface-container-low border-t border-surface-container" id="mobileControls"></div>
+
+<div id="subHeader" class="h-9 bg-surface-container-low px-3 flex items-center justify-between shadow-[0_1px_0_0_#1e2330] relative z-20">
+  <div class="flex items-center gap-2 text-on-surface-variant font-mono text-xs min-w-0">
+    <span class="material-symbols-outlined text-[15px] text-primary">data_object</span>
+    <span class="hidden sm:inline">src</span><span class="hidden sm:inline text-surface-container-highest">/</span>
+    <span id="crumbFile" class="text-on-surface truncate">untitled.lang</span>
+    <span id="statusBadge" class="px-1.5 rounded font-mono text-[10px] uppercase hidden"></span>
+  </div>
+  <div class="flex items-center gap-1">
+    <button id="formatBtn" class="tool"><span class="material-symbols-outlined text-[14px]">format_align_left</span><span class="hidden sm:inline">Format</span></button>
+    <button id="copyBtn" class="tool"><span class="material-symbols-outlined text-[14px]">content_copy</span><span class="hidden sm:inline">Copy</span></button>
+    <button id="revertBtn" class="tool"><span class="material-symbols-outlined text-[14px]">restart_alt</span><span class="hidden sm:inline">Revert</span></button>
+  </div>
+</div>
+
+<main id="workspace" class="flex flex-col lg:flex-row">
+  <section id="leftPanel" class="flex flex-col bg-surface-container-lowest min-h-0 lg:w-1/2">
+    <div class="h-8 bg-surface-container-low flex items-center justify-between px-1 shadow-[0_1px_0_0_#1e2330]">
+      <div class="h-full px-3 bg-surface-container-lowest flex items-center gap-1.5 font-mono text-xs shadow-[inset_0_2px_0_0_#528dff]">
+        <span class="material-symbols-outlined text-[14px] text-primary">description</span>
+        <span id="tabFile">untitled.lang</span>
+        <span id="tabErrDot" class="w-1.5 h-1.5 rounded-full bg-error hidden"></span>
+      </div>
+      <span class="font-mono text-[10px] text-outline pr-2">READ-WRITE</span>
+    </div>
+    <div id="editorScroll" class="flex-1 overflow-auto relative min-h-0">
+      <div id="editorInner" class="relative flex min-h-full">
+        <div id="gutter" class="sticky left-0 z-10 bg-surface-container-lowest text-outline text-right font-mono select-none"></div>
+        <div class="relative flex-1">
+          <pre id="highlight" class="code-layer" aria-hidden="true"></pre>
+          <textarea id="editor" class="code-layer" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea>
+          <div id="tooltip" class="hidden absolute z-20 w-[min(440px,90%)] rounded-lg bg-surface-container-high shadow-[0_8px_30px_rgba(0,0,0,0.6)] border border-outline-variant/40 p-3"></div>
+        </div>
+      </div>
+    </div>
+    <div class="h-7 bg-surface-container-low flex items-center justify-between px-3 font-mono text-[11px] text-on-surface-variant">
+      <div class="flex items-center gap-2"><span id="errorCount"></span><span id="cursorPos">Ln 1, Col 1</span><span class="hidden sm:inline">· UTF-8 · .lang</span></div>
+      <span class="hidden sm:inline">Grammar: LL(1) recursive descent</span>
+    </div>
+  </section>
+
+  <div id="divider" class="hidden lg:block w-1.5 bg-surface-container-low hover:bg-primary-container/50 cursor-col-resize"></div>
+
+  <section id="rightPanel" class="flex flex-col bg-surface min-h-0 flex-1">
+    <div class="h-10 bg-surface-container-low flex items-center px-2 gap-1 overflow-x-auto shadow-[0_1px_0_0_#1e2330]" role="tablist">
+      <button data-tab="errors" class="tab"><span class="material-symbols-outlined text-[16px]">error</span>Errors<span id="errBadge" class="badge hidden"></span></button>
+      <button data-tab="attempts" class="tab"><span class="material-symbols-outlined text-[16px]">history</span>Repair Attempts<span id="attBadge" class="badge hidden"></span></button>
+      <button data-tab="corrected" class="tab"><span id="fixDot" class="w-2 h-2 rounded-full bg-outline"></span>Corrected Code</button>
+    </div>
+    <div id="rightBody" class="flex-1 overflow-auto p-3 space-y-3"></div>
+    <div class="h-7 bg-surface-container-low flex items-center justify-between px-3 font-mono text-[11px] text-on-surface-variant">
+      <span id="modelFooter"></span><span id="latencyFooter"></span>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 px-3 py-2 rounded bg-surface-container-highest text-sm shadow-lg hidden z-50"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

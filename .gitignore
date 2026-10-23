@@ -3,6 +3,7 @@ __pycache__/
 tmp.lang
 traces/
 .cursor/
+.claude/
 .venv/
 venv/
 pytest-cache-files-*/
