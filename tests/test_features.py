@@ -380,3 +380,65 @@ def test_function_ast_patch_and_intent():
     fp_orig = fingerprint(ast)
     fp_repaired = fingerprint(parse(pretty_print(ast)))
     assert compare(fp_orig, fp_repaired) == []
+
+
+def test_lexer_recovers_and_collects_errors():
+    errs = []
+    tokens = lex("counter = 1counter + @;", errors=errs)
+    assert len(errs) == 2
+    assert "malformed number" in str(errs[0])
+    assert "illegal character '@'" in str(errs[1])
+    # Ensure tokens were still emitted so parsing can continue
+    token_types = [t.type for t in tokens]
+    assert "ID" in token_types
+    assert "PLUS" in token_types
+    assert "SEMI" in token_types
+
+
+def test_diagnose_multiple_errors():
+    from server import _diagnose
+
+    source = """int x = 10;
+if (x > 5 {
+  print(x);
+}
+int counter = 0;
+while (counter < 3) {
+  print(counter);
+  counter = 1counter + 1;
+}
+"""
+    records, ast, analyzer, elapsed = _diagnose(source)
+    assert len(records) >= 2
+    lines = [r.line for r in records]
+    assert 2 in lines
+    assert 8 in lines
+
+
+def test_multi_error_repair_fallback(monkeypatch):
+    from errors import build_error_record
+    from parser import ParseError
+    import repair_loop
+
+    source = "int x = 10; int counter = 0;\nif (x > 5 { print(x); }\ncounter = 1counter + 1;"
+    err1 = ParseError("expected ')' after condition", 2, 11, ")", "{")
+    record = build_error_record(err1, source, {})
+    all_errors = [
+        {"error_type": "ParseError", "phase": "PARSER", "message": "expected ')'", "line": 2, "column": 11},
+        {"error_type": "LexError", "phase": "LEXER", "message": "malformed number", "line": 3, "column": 11},
+    ]
+
+    monkeypatch.setattr(
+        repair_loop,
+        "_call_text",
+        lambda prompt, model=None: {
+            "explanation": "fixed both syntax and lexical errors",
+            "fixed_code": "int x = 10; int counter = 0;\nif (x > 5) { print(x); }\ncounter = counter + 1;",
+        },
+    )
+
+    result = repair_loop.self_healing_repair(source, record, repair_mode="ast", all_errors=all_errors)
+    assert result.success
+    assert result.repair_mode == "text_fallback"
+    assert "counter = counter + 1;" in result.final_fixed_code
+

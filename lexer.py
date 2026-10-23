@@ -65,7 +65,7 @@ class LexError(Exception):
         self.col = col
 
 
-def lex(source: str) -> list[Token]:
+def lex(source: str, errors: list | None = None) -> list[Token]:
     tokens: list[Token] = []
     i, n = 0, len(source)
     line, col = 1, 1
@@ -101,6 +101,11 @@ def lex(source: str) -> list[Token]:
                     col += 1
                 j += 1
             if j >= n:
+                if errors is not None:
+                    errors.append(LexError("unterminated string", start_line, start_col))
+                    tokens.append(Token("STRING", source[i:j], start_line, start_col))
+                    i = j
+                    continue
                 raise LexError("unterminated string", start_line, start_col)
             lexeme = source[i : j + 1]
             tokens.append(Token("STRING", lexeme, start_line, start_col))
@@ -120,6 +125,16 @@ def lex(source: str) -> list[Token]:
         m = _NUM.match(source, i)
         if m:
             if m.end() < n and _BAD_NUM.match(source[m.end()]):
+                if errors is not None:
+                    errors.append(LexError("malformed number", start_line, start_col))
+                    end_j = m.end()
+                    while end_j < n and _BAD_NUM.match(source[end_j]):
+                        end_j += 1
+                    bad_lexeme = source[i:end_j]
+                    tokens.append(Token("ID", bad_lexeme, start_line, start_col))
+                    i = end_j
+                    col += len(bad_lexeme)
+                    continue
                 raise LexError("malformed number", start_line, start_col)
             lexeme = m.group()
             tokens.append(Token("NUMBER", lexeme, start_line, start_col))
@@ -136,6 +151,12 @@ def lex(source: str) -> list[Token]:
                 matched = True
                 break
         if matched:
+            continue
+
+        if errors is not None:
+            errors.append(LexError(f"illegal character {source[i]!r}", start_line, start_col))
+            i += 1
+            col += 1
             continue
 
         raise LexError(f"illegal character {source[i]!r}", start_line, start_col)

@@ -112,20 +112,47 @@ def _diagnose(source):
     analyzer = SemanticAnalyzer()
     ast = None
     started = time.perf_counter()
+
+    lex_errors = []
+    tokens = lex(source, errors=lex_errors)
+
+    parser = Parser(tokens)
     try:
-        ast = Parser(lex(source)).parse()
-        analyzer.analyze(ast)
-        return None, ast, analyzer, (time.perf_counter() - started) * 1000
-    except (LexError, ParseError, SemanticError) as error:
-        record = build_error_record(error, source, dict(analyzer.symbol_table))
-        if isinstance(error, ParseError):
-            try:
-                ast = Parser(lex(source)).parse(partial=True)
-            except LexError:
-                ast = None
-        record.ast = ast
-        record.target_node_id = _target_id(ast, error.line)
-        return record, ast, analyzer, (time.perf_counter() - started) * 1000
+        ast = parser.parse(partial=True)
+    except Exception:
+        ast = None
+    parse_errors = list(parser.errors)
+
+    semantic_errors = []
+    if ast is not None and not parse_errors:
+        try:
+            analyzer.analyze(ast, collect_errors=True)
+        except SemanticError as e:
+            semantic_errors.append(e)
+        semantic_errors.extend(getattr(analyzer, "errors", []))
+
+    all_raw_errors = []
+    seen = set()
+    for err in lex_errors + parse_errors + semantic_errors:
+        key = (getattr(err, "line", 0), getattr(err, "col", 0), str(getattr(err, "message", "")))
+        if key not in seen:
+            seen.add(key)
+            all_raw_errors.append(err)
+
+    all_raw_errors.sort(key=lambda e: (getattr(e, "line", 0), getattr(e, "col", 0)))
+    elapsed = (time.perf_counter() - started) * 1000
+
+    if not all_raw_errors:
+        return [], ast, analyzer, elapsed
+
+    records = []
+    for err in all_raw_errors:
+        rec = build_error_record(err, source, dict(analyzer.symbol_table))
+        rec.ast = ast
+        rec.target_node_id = _target_id(ast, err.line)
+        records.append(rec)
+
+    return records, ast, analyzer, elapsed
 
 
 def _record_json(record, ast, analyzer):
@@ -144,22 +171,36 @@ def _record_json(record, ast, analyzer):
 
 @app.post("/api/compile")
 def compile_endpoint(request: CompileRequest):
-    record, ast, analyzer, elapsed = _diagnose(request.source)
-    if record is None:
-        return {"status": "ok", "elapsed_ms": elapsed, "symbols": _symbols(ast, analyzer.symbol_table, analyzer), "node_count": len(index_nodes(ast))}
-    return {"status": "error", "elapsed_ms": elapsed, "error": _record_json(record, ast, analyzer)}
+    records, ast, analyzer, elapsed = _diagnose(request.source)
+    if not records:
+        return {"status": "ok", "elapsed_ms": elapsed, "symbols": _symbols(ast, analyzer.symbol_table, analyzer), "node_count": len(index_nodes(ast)) if ast else 0}
+    return {
+        "status": "error",
+        "elapsed_ms": elapsed,
+        "error": _record_json(records[0], ast, analyzer),
+        "errors": [_record_json(rec, ast, analyzer) for rec in records],
+    }
 
 
 @app.post("/api/repair")
 def repair_endpoint(request: RepairRequest):
     if request.repair_mode not in {"ast", "text"}:
         raise HTTPException(400, "repair_mode must be ast or text")
-    record, ast, analyzer, _ = _diagnose(request.source)
-    if record is None:
+    records, ast, analyzer, _ = _diagnose(request.source)
+    if not records:
         return {"status": "ok"}
     started = time.time()
     try:
-        result = self_healing_repair(request.source, record, max_attempts=3, repair_mode=request.repair_mode, intent_guard=request.intent_guard, original_ast=ast, model=request.model or None)
+        result = self_healing_repair(
+            request.source,
+            records[0],
+            max_attempts=3,
+            repair_mode=request.repair_mode,
+            intent_guard=request.intent_guard,
+            original_ast=ast,
+            model=request.model or None,
+            all_errors=records,
+        )
     except Exception as error:
         raise HTTPException(503, f"LLM unavailable: {error}")
     return {
@@ -183,7 +224,8 @@ def repair_endpoint(request: RepairRequest):
             }
             for attempt in result.attempts
         ],
-        "error": _record_json(record, ast, analyzer),
+        "error": _record_json(records[0], ast, analyzer),
+        "errors": [_record_json(rec, ast, analyzer) for rec in records],
     }
 
 

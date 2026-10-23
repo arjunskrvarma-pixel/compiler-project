@@ -64,9 +64,20 @@ VARIABLES IN SCOPE:
 """
 
 
-def build_repair_prompt(original_source, current_error, attempts_history):
+def _err_attr(e, key):
+    if isinstance(e, dict):
+        return e.get(key, "")
+    return getattr(e, key, "")
+
+
+def build_repair_prompt(original_source, current_error, attempts_history, all_errors=None):
     history = "\n".join(f"Attempt {item.attempt_num} rejected: {item.rejected_reason or item.verify_error}" for item in attempts_history)
-    return _base_prompt(current_error) + f"""PREVIOUS ATTEMPTS:
+    extra_errors = ""
+    if all_errors and len(all_errors) > 1:
+        extra_errors = "ALL DETECTED COMPILER ERRORS (Fix ALL of these):\n" + "\n".join(
+            f"  * Line {_err_attr(e, 'line')}, Col {_err_attr(e, 'column')} [{_err_attr(e, 'error_type')}]: {_err_attr(e, 'message')}" for e in all_errors
+        ) + "\n\n"
+    return _base_prompt(current_error) + extra_errors + f"""PREVIOUS ATTEMPTS:
 {history}
 ORIGINAL SOURCE:
 {_number_source(original_source)}
@@ -99,7 +110,7 @@ def _call_ast(prompt, model=None):
     return call_llm_prompt(prompt, ("explanation", "edits"), fallback, lambda data: isinstance(data, dict) and isinstance(data.get("explanation"), str) and isinstance(data.get("edits"), list), model=model)
 
 
-def self_healing_repair(source, initial_error, max_attempts=3, repair_mode="ast", intent_guard=True, original_ast=None, model=None):
+def self_healing_repair(source, initial_error, max_attempts=3, repair_mode="ast", intent_guard=True, original_ast=None, model=None, all_errors=None):
     program = original_ast or initial_error.ast
     mode = repair_mode
     # A semicolon is a token delimiter rather than a meaningful AST node.
@@ -109,7 +120,8 @@ def self_healing_repair(source, initial_error, max_attempts=3, repair_mode="ast"
         initial_error.error_type == "SYNTAX"
         and initial_error.grammar_rule == "SEMI"
     )
-    if mode == "ast" and (initial_error.error_type == "LEXICAL" or program is None or missing_semicolon):
+    has_multiple_errors = all_errors is not None and len(all_errors) > 1
+    if mode == "ast" and (initial_error.error_type == "LEXICAL" or program is None or missing_semicolon or has_multiple_errors):
         mode = "text_fallback"
     # The partial AST contains an ErrorNode at a missing semicolon, so it is
     # not a trustworthy baseline for intent comparison. Candidate verification
@@ -133,7 +145,7 @@ def self_healing_repair(source, initial_error, max_attempts=3, repair_mode="ast"
                 current_error = build_error_record_from_string(str(error), "SCHEMA", source)
                 continue
         else:
-            data = _call_text(build_repair_prompt(source, current_error, attempts), model)
+            data = _call_text(build_repair_prompt(source, current_error, attempts, all_errors=all_errors), model)
             explanation, candidate, edits = data["explanation"], _remove_copied_line_numbers(data["fixed_code"]), []
             if not candidate:
                 attempts.append(RepairAttempt(number, "", explanation, False, "LLM returned empty fix", "SYNTAX", [], [], "malformed"))

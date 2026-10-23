@@ -96,8 +96,15 @@ function highlightSource(source) {
   return source.split("\n").map((line) => highlightLine(line, null)).join("\n");
 }
 
+function allErrors() {
+  if (!state.diagnosis || state.diagnosis.status !== "error" || state.stale) return [];
+  if (state.diagnosis.errors && state.diagnosis.errors.length) return state.diagnosis.errors;
+  return state.diagnosis.error ? [state.diagnosis.error] : [];
+}
+
 function currentError() {
-  return state.diagnosis && state.diagnosis.status === "error" && !state.stale ? state.diagnosis.error : null;
+  const errs = allErrors();
+  return errs[state.activeErrorIndex || 0] || errs[0] || null;
 }
 
 function errorColumn(err, lineText) {
@@ -109,13 +116,22 @@ function errorColumn(err, lineText) {
 
 function renderEditor() {
   const lines = state.source.split("\n");
-  const err = currentError();
+  const errs = allErrors();
+  const errMap = new Map();
+  errs.forEach((e) => {
+    if (!errMap.has(e.line)) errMap.set(e.line, e);
+  });
   $("highlight").innerHTML = lines.map((line, index) => {
-    const isErr = err && err.line === index + 1;
+    const lineNum = index + 1;
+    const err = errMap.get(lineNum);
+    const isErr = Boolean(err);
     const html = highlightLine(line, isErr ? errorColumn(err, line) : null);
     return isErr ? `<span class="line-err">${html || " "}</span>` : html;
   }).join("\n") + "\n";
-  $("gutter").innerHTML = lines.map((_, index) => `<div class="${err && err.line === index + 1 ? "err" : ""}">${index + 1}</div>`).join("");
+  $("gutter").innerHTML = lines.map((_, index) => {
+    const lineNum = index + 1;
+    return `<div class="${errMap.has(lineNum) ? "err" : ""}">${lineNum}</div>`;
+  }).join("");
   const pre = $("highlight");
   const editor = $("editor");
   const height = lines.length * LINE + PAD * 2 + LINE;
@@ -261,26 +277,48 @@ function renderErrorsTab() {
       <p class="text-sm text-on-surface-variant mt-1 mono">${d.node_count} AST nodes · ${d.elapsed_ms.toFixed(1)} ms</p></div>
       ${section("Symbol Table", "account_tree", `<span class="mono text-[11px] text-outline">${d.symbols.length} symbols</span>`, symbolTable(d.symbols))}`;
   }
-  const err = d.error;
+  const errors = allErrors();
   const stale = state.stale ? '<div class="card px-3 py-2 text-sm text-warn flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">sync_problem</span>Source changed since this diagnosis. Recompile to refresh.</div>' : "";
-  const production = productionFor(err);
-  return `${stale}
-  <div class="card border-l-4 !border-l-error p-4 space-y-3">
-    <div class="flex items-center justify-between gap-2 flex-wrap">
-      <div class="flex items-center gap-2 mono text-sm">${chipFor(err.error_type)}<span class="font-semibold">Line ${err.line}, Col ${err.column}</span>${err.target_node_id ? `<span class="chip bg-surface-container-highest text-on-surface-variant">Node #${err.target_node_id}</span>` : ""}</div>
-      <span class="mono text-[11px] text-outline flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">schedule</span>${d.elapsed_ms.toFixed(1)} ms</span>
-    </div>
-    <div class="text-lg font-semibold">${escapeHtml(err.message)}</div>
-    <p class="text-sm text-on-surface-variant">${suggestion(err)}.</p>
-    ${production ? `<div class="rounded bg-surface-container-lowest p-3"><div class="flex justify-between mono text-[10px] uppercase text-outline mb-1"><span>Parser expected production</span><span class="text-primary">Grammar</span></div><div class="mono text-[12.5px] text-primary break-words">${escapeHtml(production)}</div></div>` : ""}
-    ${snippet(err)}
-    <div class="flex items-center justify-end gap-2 flex-wrap">
-      <button data-action="goto-line" class="btn btn-ghost"><span class="material-symbols-outlined text-[16px]">my_location</span>Go to line</button>
-      <button data-action="repair" class="btn btn-primary" ${repairDisabled()}><span class="material-symbols-outlined text-[18px]">auto_fix_high</span>${state.repairing ? "Repairing…" : `Run ${state.mode.toUpperCase()} Repair`}</button>
-    </div>
-  </div>
-  ${section("Symbol Table", "account_tree", `<span class="mono text-[11px] text-outline">Scope: global</span><span class="chip bg-surface-container-highest text-on-surface-variant ml-1">${err.symbols.length} symbols</span>`, symbolTable(err.symbols))}
-  ${section("AST Context (Target Node)", "lan", err.target_node_id ? `<span class="chip ${err.ast_context?.target?.type === "ErrorNode" ? "bg-error-container text-error" : "bg-primary-container/30 text-primary"} ml-1">${err.ast_context?.target?.type === "ErrorNode" ? "Malformed" : "Target"} Node #${err.target_node_id}</span>` : "", astContext(err.ast_context, err))}`;
+  
+  const header = errors.length > 1
+    ? `<div class="card p-3 flex items-center justify-between bg-error-container/20 border-error/50">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-error">error</span>
+          <span class="font-semibold text-error">${errors.length} Errors Detected</span>
+        </div>
+        <span class="mono text-xs text-outline">${d.elapsed_ms.toFixed(1)} ms</span>
+       </div>`
+    : "";
+
+  const cards = errors.map((err, i) => {
+    const production = productionFor(err);
+    const badge = errors.length > 1 ? `<span class="chip bg-error/20 text-error font-mono">Error ${i + 1} of ${errors.length}</span>` : "";
+    return `
+    <div class="card border-l-4 !border-l-error p-4 space-y-3">
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        <div class="flex items-center gap-2 mono text-sm">
+          ${chipFor(err.error_type)}
+          <span class="font-semibold">Line ${err.line}, Col ${err.column}</span>
+          ${badge}
+          ${err.target_node_id ? `<span class="chip bg-surface-container-highest text-on-surface-variant">Node #${err.target_node_id}</span>` : ""}
+        </div>
+        <span class="mono text-[11px] text-outline flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">schedule</span>${d.elapsed_ms.toFixed(1)} ms</span>
+      </div>
+      <div class="text-lg font-semibold">${escapeHtml(err.message)}</div>
+      <p class="text-sm text-on-surface-variant">${suggestion(err)}.</p>
+      ${production ? `<div class="rounded bg-surface-container-lowest p-3"><div class="flex justify-between mono text-[10px] uppercase text-outline mb-1"><span>Parser expected production</span><span class="text-primary">Grammar</span></div><div class="mono text-[12.5px] text-primary break-words">${escapeHtml(production)}</div></div>` : ""}
+      ${snippet(err)}
+      <div class="flex items-center justify-end gap-2 flex-wrap">
+        <button data-action="goto-line" data-line="${err.line}" data-col="${err.column}" class="btn btn-ghost"><span class="material-symbols-outlined text-[16px]">my_location</span>Go to line ${err.line}</button>
+        <button data-action="repair" class="btn btn-primary" ${repairDisabled()}><span class="material-symbols-outlined text-[18px]">auto_fix_high</span>${state.repairing ? "Repairing…" : `Run ${state.mode.toUpperCase()} Repair`}</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  const primaryErr = errors[0] || d.error;
+  return `${stale}${header}${cards}
+  ${section("Symbol Table", "account_tree", `<span class="mono text-[11px] text-outline">Scope: global</span><span class="chip bg-surface-container-highest text-on-surface-variant ml-1">${primaryErr?.symbols?.length || 0} symbols</span>`, symbolTable(primaryErr?.symbols || []))}
+  ${section("AST Context (Target Node)", "lan", primaryErr?.target_node_id ? `<span class="chip ${primaryErr.ast_context?.target?.type === "ErrorNode" ? "bg-error-container text-error" : "bg-primary-container/30 text-primary"} ml-1">${primaryErr.ast_context?.target?.type === "ErrorNode" ? "Malformed" : "Target"} Node #${primaryErr.target_node_id}</span>` : "", astContext(primaryErr?.ast_context, primaryErr))}`;
 }
 
 function attemptCard(attempt) {
@@ -356,10 +394,11 @@ function renderRight() {
   const body = { errors: renderErrorsTab, attempts: renderAttemptsTab, corrected: renderCorrectedTab }[state.tab]();
   $("rightBody").innerHTML = body;
   const err = currentError();
+  const errs = allErrors();
   const errBadge = $("errBadge");
-  errBadge.classList.toggle("hidden", !(state.diagnosis && state.diagnosis.status === "error"));
-  errBadge.className = "badge bg-error text-surface" + (state.diagnosis && state.diagnosis.status === "error" ? "" : " hidden");
-  errBadge.textContent = "1";
+  errBadge.classList.toggle("hidden", errs.length === 0);
+  errBadge.className = "badge bg-error text-surface" + (errs.length > 0 ? "" : " hidden");
+  errBadge.textContent = String(errs.length);
   const attBadge = $("attBadge");
   if (state.repairing) { attBadge.className = "badge bg-primary-container/30 text-primary"; attBadge.textContent = "running"; }
   else if (state.repair) { attBadge.className = "badge bg-surface-container-highest text-on-surface-variant"; attBadge.textContent = String(state.repair.attempts.length); }
@@ -371,11 +410,12 @@ function renderRight() {
 function renderStatus(err) {
   const badge = $("statusBadge");
   const d = state.diagnosis;
-  const label = !d ? "" : d.status === "ok" ? "Compiled OK" : { LEXICAL: "Lex Failure", SYNTAX: "Parse Failure", SEMANTIC: "Type Error" }[d.error.error_type];
+  const errs = allErrors();
+  const label = !d ? "" : d.status === "ok" ? "Compiled OK" : (errs.length > 1 ? `${errs.length} Failures` : { LEXICAL: "Lex Failure", SYNTAX: "Parse Failure", SEMANTIC: "Type Error" }[d.error.error_type]);
   badge.textContent = state.repairing ? "Repairing…" : label;
   badge.className = "px-1.5 rounded font-mono text-[10px] uppercase " + (!d && !state.repairing ? "hidden" : state.repairing ? "bg-primary-container/30 text-primary" : d.status === "ok" ? "bg-tertiary/15 text-tertiary" : "bg-error-container/40 text-error");
-  $("tabErrDot").classList.toggle("hidden", !err);
-  $("errorCount").innerHTML = d ? (d.status === "ok" ? '<span class="text-tertiary">● 0 Errors</span> ·' : '<span class="text-error">● 1 Error</span> ·') : "";
+  $("tabErrDot").classList.toggle("hidden", errs.length === 0);
+  $("errorCount").innerHTML = d ? (d.status === "ok" ? '<span class="text-tertiary">● 0 Errors</span> ·' : `<span class="text-error">● ${errs.length} Error${errs.length > 1 ? "s" : ""}</span> ·`) : "";
   $("modelFooter").innerHTML = `<span class="${state.ollama ? "text-tertiary" : "text-error"}">●</span> Repair model: ${escapeHtml(state.model || "—")}`;
   $("latencyFooter").textContent = d ? `Check: ${d.elapsed_ms.toFixed(1)} ms${state.repair ? ` · Repair: ${state.repair.elapsed.toFixed(1)} s` : ""}` : "";
   for (const id of ["fileName", "crumbFile", "tabFile"]) $(id).textContent = state.fileName;
@@ -514,13 +554,17 @@ function loadExample(name) {
   compile(true);
 }
 
-async function handleAction(action) {
+async function handleAction(action, elem) {
   const err = state.diagnosis?.error;
   if (action === "repair") repair();
   else if (action === "close-tip") { state.showTooltip = false; renderTooltip(); }
   else if (action === "goto-errors") { state.tab = "errors"; renderRight(); }
   else if (action === "goto-attempts") { state.tab = "attempts"; renderRight(); }
-  else if (action === "goto-line" && err) gotoLine(err.line, err.column || 1);
+  else if (action === "goto-line") {
+    const line = elem?.dataset?.line ? Number(elem.dataset.line) : err?.line;
+    const col = elem?.dataset?.col ? Number(elem.dataset.col) : (err?.column || 1);
+    if (line) gotoLine(line, col);
+  }
   else if (action === "toggle-guard") { state.guard = !state.guard; render(); }
   else if (action === "copy-fix") { await navigator.clipboard.writeText(state.repair.fixed_code); toast("Corrected code copied"); }
   else if (action === "download-fix") download(state.fileName.replace(/\.lang$/, "") + ".fixed.lang", state.repair.fixed_code);
@@ -581,7 +625,7 @@ function bind() {
     const view = e.target.closest("[data-view]");
     if (view) { state.correctedView = view.dataset.view; renderRight(); return; }
     const action = e.target.closest("[data-action]");
-    if (action) handleAction(action.dataset.action);
+    if (action) handleAction(action.dataset.action, action);
   });
   document.addEventListener("change", (e) => {
     if (e.target.matches('[data-role="example"]')) loadExample(e.target.value);

@@ -27,17 +27,25 @@ class SemanticAnalyzer:
         self.current_function = None
         self.local_scope = None
 
-    def analyze(self, program: Program) -> None:
+    def analyze(self, program: Program, collect_errors: bool = False) -> None:
+        self.errors = []
         # Pre-pass: register function signatures
         for stmt in program.statements:
             if isinstance(stmt, FunctionDef):
                 if stmt.name in self.functions:
-                    raise _error(f"function '{stmt.name}' already declared", stmt)
+                    err = _error(f"function '{stmt.name}' already declared", stmt)
+                    self.errors.append(err)
+                    if not collect_errors:
+                        raise err
+                    continue
                 param_names = set()
                 param_list = []
                 for p in stmt.params:
                     if p.name in param_names:
-                        raise _error(f"duplicate parameter '{p.name}' in function '{stmt.name}'", p)
+                        err = _error(f"duplicate parameter '{p.name}' in function '{stmt.name}'", p)
+                        self.errors.append(err)
+                        if not collect_errors:
+                            raise err
                     param_names.add(p.name)
                     param_list.append((p.var_type, p.name))
                 self.functions[stmt.name] = {
@@ -47,7 +55,15 @@ class SemanticAnalyzer:
                 }
 
         for stmt in program.statements:
-            self._stmt(stmt)
+            try:
+                self._stmt(stmt)
+            except SemanticError as err:
+                self.errors.append(err)
+                if not collect_errors:
+                    raise err
+
+        if self.errors and not collect_errors:
+            raise self.errors[0]
 
     def _lookup(self, name: str) -> str | None:
         if self.local_scope is not None and name in self.local_scope:
@@ -73,6 +89,8 @@ class SemanticAnalyzer:
             self._return_stmt(node)
         elif isinstance(node, CallStmt):
             self._call_stmt(node)
+        elif isinstance(node, ErrorNode):
+            return
 
     def _function_def(self, node: FunctionDef) -> None:
         prev_func = self.current_function
@@ -173,6 +191,8 @@ class SemanticAnalyzer:
             self._stmt(stmt)
 
     def type_of(self, node) -> str:
+        if isinstance(node, ErrorNode):
+            return "unknown"
         if isinstance(node, Number):
             return "float" if "." in node.value else "int"
         if isinstance(node, StringLit):
