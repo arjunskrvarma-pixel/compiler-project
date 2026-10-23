@@ -6,15 +6,16 @@ from errors import ErrorRecord
 
 _MODEL = "qwen2.5-coder:3b"
 LANGUAGE_SUMMARY = """LANGUAGE GRAMMAR:
-  statement  -> type ID "=" expr ";" | ID "=" expr ";" | ID "[" expr "]" "=" expr ";" | if | while | print
+  statement  -> type ID "=" expr ";" | type ID "(" params? ")" block | ID "=" expr ";" | ID "[" expr "]" "=" expr ";" | ID "(" args? ")" ";" | return | if | while | print
+  return     -> "return" expr? ";"
   if         -> "if" "(" expr ")" block ( "else" ( if | block ) )?
   while      -> "while" "(" expr ")" block
   print      -> "print" "(" expr ")" ";"
   block      -> "{" statement* "}"
   expr precedence (low to high): || , && , == != , < > <= >= , + - , * / % , unary - ! , postfix [] , primary
-  primary    -> NUMBER | STRING | true | false | ID | "[" (expr ("," expr)*)? "]" | "(" expr ")" | type "(" expr ")"
-  types: int, float, bool, string, int[], float[], bool[], string[]. Casts use function syntax int(x), float(x), bool(x), never C-style.
-TYPE RULES: array index must be int; array element types must be homogeneous; && || ! need bool; % needs int and int; unary - needs int or float; < > <= >= need two identical numeric types; == != need identical types; conditions must be bool; no implicit conversion on assignment."""
+  primary    -> NUMBER | STRING | true | false | ID | ID "(" args? ")" | "[" (expr ("," expr)*)? "]" | "(" expr ")" | type "(" expr ")"
+  types: int, float, bool, string, void, int[], float[], bool[], string[]. Casts use function syntax int(x), float(x), bool(x), never C-style.
+TYPE RULES: functions define return type (or void); return expr must match function return type; array index must be int; array element types must be homogeneous; && || ! need bool; % needs int and int; unary - needs int or float; < > <= >= need two identical numeric types; == != need identical types; conditions must be bool; no implicit conversion on assignment."""
 _FALLBACK = {"explanation": "LLM returned invalid format", "fixed_code": ""}
 
 

@@ -1,9 +1,16 @@
-from ast_nodes import ArrayAssignment, ArrayLit, Assignment, BinaryOp, BoolLit, Cast, Declaration, ErrorNode, Identifier, IfStmt, IndexExpr, Number, PrintStmt, Program, StringLit, UnaryOp, WhileStmt
+from ast_nodes import ArrayAssignment, ArrayLit, Assignment, BinaryOp, BoolLit, CallExpr, CallStmt, Cast, Declaration, ErrorNode, FunctionDef, Identifier, IfStmt, IndexExpr, Number, Param, PrintStmt, Program, ReturnStmt, StringLit, UnaryOp, WhileStmt
 
 
 def pretty_print(node) -> str:
     if isinstance(node, Program):
         return "\n".join(pretty_print(item) for item in node.statements)
+    if isinstance(node, FunctionDef):
+        params = ", ".join(f"{p.var_type} {p.name}" for p in node.params)
+        return f"{node.return_type} {node.name}({params}) {{\n{_block(node.body)}\n}}"
+    if isinstance(node, ReturnStmt):
+        return f"return {pretty_print(node.expr)};" if node.expr is not None else "return;"
+    if isinstance(node, CallStmt):
+        return f"{pretty_print(node.call)};"
     if isinstance(node, Declaration):
         return f"{node.var_type} {node.name} = {pretty_print(node.expr)};"
     if isinstance(node, Assignment):
@@ -25,6 +32,9 @@ def pretty_print(node) -> str:
         return f"({pretty_print(node.left)} {node.op} {pretty_print(node.right)})"
     if isinstance(node, UnaryOp):
         return f"({node.op}{pretty_print(node.operand)})"
+    if isinstance(node, CallExpr):
+        args = ", ".join(pretty_print(arg) for arg in node.args)
+        return f"{node.callee}({args})"
     if isinstance(node, Identifier):
         return node.name
     if isinstance(node, Number):
@@ -39,6 +49,8 @@ def pretty_print(node) -> str:
         return f"[{', '.join(pretty_print(item) for item in node.elements)}]"
     if isinstance(node, IndexExpr):
         return f"{pretty_print(node.array)}[{pretty_print(node.index)}]"
+    if isinstance(node, Param):
+        return f"{node.var_type} {node.name}"
     if isinstance(node, ErrorNode):
         return ""
     raise TypeError(f"cannot print {type(node).__name__}")

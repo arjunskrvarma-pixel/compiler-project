@@ -16,23 +16,30 @@ while (counter < 3) {
 
 const TOKEN_SYMBOLS = {
   RPAREN: ")", LPAREN: "(", RBRACE: "}", LBRACE: "{", SEMI: ";", ASSIGN: "=",
+  LBRACKET: "[", RBRACKET: "]", COMMA: ",", RETURN: "return", VOID: "void",
   ID: "identifier", type: "type", expression: "expression", statement: "statement",
 };
 
 const PRODUCTIONS = {
+  FunctionDef: 'func_def   ::= type ID "(" ( type ID ( "," type ID )* )? ")" block',
+  ReturnStmt: 'return_stmt ::= "return" expr? ";"',
+  CallStmt: 'call_stmt   ::= ID "(" ( expr ( "," expr )* )? ")" ";"',
+  CallExpr: 'call_expr   ::= ID "(" ( expr ( "," expr )* )? ")"',
   IfStmt: 'if_stmt   ::= "if" "(" expr ")" block ( "else" ( if_stmt | block ) )?',
   WhileStmt: 'while_stmt ::= "while" "(" expr ")" block',
   PrintStmt: 'print_stmt ::= "print" "(" expr ")" ";"',
-  Declaration: 'declaration ::= type ID "=" expr ";"',
-  Assignment: 'assignment ::= ID "=" expr ";"',
+  Declaration: 'declaration ::= type ID "=" expr ";" | type "[" "]" ID "=" expr ";"',
+  Assignment: 'assignment ::= ID "=" expr ";" | ID "[" expr "]" "=" expr ";"',
   BinaryOp: "expr ::= or ; or ::= and ( \"||\" and )* ; and ::= equality ( \"&&\" equality )*",
-  UnaryOp: 'unary ::= ( "-" | "!" ) unary | primary',
+  UnaryOp: 'unary ::= ( "-" | "!" ) unary | postfix',
+  IndexExpr: 'postfix ::= primary ( "[" expr "]" )*',
+  ArrayLit: 'primary ::= "[" ( expr ( "," expr )* )? "]"',
   Program: "program ::= statement*",
   ErrorNode: "statement ::= declaration | assignment | if_stmt | while_stmt | print_stmt",
 };
 
-const KEYWORDS = new Set(["if", "else", "while", "print"]);
-const TYPES = new Set(["int", "float", "bool", "string"]);
+const KEYWORDS = new Set(["if", "else", "while", "print", "return"]);
+const TYPES = new Set(["int", "float", "bool", "string", "void"]);
 const BOOLS = new Set(["true", "false"]);
 
 const state = {
@@ -236,8 +243,10 @@ function emptyState(icon, title, text, extra = "") {
 function productionFor(err) {
   const lineText = state.diagnosisSource?.split("\n")[err.line - 1] ?? err.source_line ?? "";
   const head = lineText.trim().split(/[^A-Za-z_]+/)[0];
-  const byKeyword = { if: "IfStmt", else: "IfStmt", while: "WhileStmt", print: "PrintStmt", int: "Declaration", float: "Declaration", bool: "Declaration", string: "Declaration" }[head];
+  const byKeyword = { if: "IfStmt", else: "IfStmt", while: "WhileStmt", print: "PrintStmt", return: "ReturnStmt", void: "FunctionDef", int: "Declaration", float: "Declaration", bool: "Declaration", string: "Declaration" }[head];
+  if (byKeyword === "Declaration" && /\b[A-Za-z_]\w*\s*\(/.test(lineText)) return PRODUCTIONS.FunctionDef;
   if (byKeyword) return PRODUCTIONS[byKeyword];
+  if (/^[A-Za-z_]\w*\s*\(/.test(lineText.trim())) return PRODUCTIONS.CallStmt;
   if (/^[A-Za-z_]\w*\s*=/.test(lineText.trim())) return PRODUCTIONS.Assignment;
   const ctx = err.ast_context;
   return ctx ? PRODUCTIONS[ctx.target.type] : "";

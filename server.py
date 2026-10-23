@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from ast_nodes import Declaration, ErrorNode, Program, child_nodes, index_nodes
+from ast_nodes import ArrayAssignment, Declaration, ErrorNode, FunctionDef, Program, child_nodes, index_nodes
 from errors import build_error_record
 from lexer import LexError, lex
 from parser import ParseError, Parser
@@ -77,7 +77,7 @@ def _context(ast, target_id):
     return {"target": _node_json(target, "target"), "ancestors": list(reversed(ancestors)), "siblings": siblings, "children": children, "depth": depth, "node_count": len(nodes)}
 
 
-def _symbols(ast, table, checked=True):
+def _symbols(ast, table, analyzer=None, checked=True):
     lines, values, types = {}, {}, {}
     if ast is not None:
         for node in index_nodes(ast).values():
@@ -85,8 +85,19 @@ def _symbols(ast, table, checked=True):
                 lines[node.name] = node.line
                 values[node.name] = _label(node.expr)
                 types[node.name] = node.var_type
+            elif isinstance(node, FunctionDef) and node.name not in lines:
+                lines[node.name] = node.line
+                params_str = ", ".join(f"{p.var_type} {p.name}" for p in node.params)
+                values[node.name] = f"({params_str})"
+                types[node.name] = f"{node.return_type}()"
     if checked:
-        return [{"name": name, "type": kind, "line": lines.get(name), "scope": "global", "value": values.get(name, ""), "status": "resolved"} for name, kind in table.items()]
+        res = [{"name": name, "type": kind, "line": lines.get(name), "scope": "global", "value": values.get(name, ""), "status": "resolved"} for name, kind in table.items()]
+        if analyzer is not None:
+            for fname, finfo in getattr(analyzer, "functions", {}).items():
+                if not any(item["name"] == fname for item in res):
+                    params_str = ", ".join(f"{t} {n}" for t, n in finfo["params"])
+                    res.append({"name": fname, "type": f"{finfo['return_type']}()", "line": lines.get(fname), "scope": "global", "value": f"({params_str})", "status": "resolved"})
+        return res
     return [{"name": name, "type": types[name], "line": lines[name], "scope": "global", "value": values[name], "status": "parsed"} for name in lines]
 
 
@@ -126,7 +137,7 @@ def _record_json(record, ast, analyzer):
         "source_line": record.source_line,
         "grammar_rule": record.grammar_rule,
         "target_node_id": record.target_node_id,
-        "symbols": _symbols(ast, record.symbol_table, record.error_type == "SEMANTIC"),
+        "symbols": _symbols(ast, record.symbol_table, analyzer, record.error_type == "SEMANTIC"),
         "ast_context": _context(ast, record.target_node_id),
     }
 
@@ -135,7 +146,7 @@ def _record_json(record, ast, analyzer):
 def compile_endpoint(request: CompileRequest):
     record, ast, analyzer, elapsed = _diagnose(request.source)
     if record is None:
-        return {"status": "ok", "elapsed_ms": elapsed, "symbols": _symbols(ast, analyzer.symbol_table), "node_count": len(index_nodes(ast))}
+        return {"status": "ok", "elapsed_ms": elapsed, "symbols": _symbols(ast, analyzer.symbol_table, analyzer), "node_count": len(index_nodes(ast))}
     return {"status": "error", "elapsed_ms": elapsed, "error": _record_json(record, ast, analyzer)}
 
 

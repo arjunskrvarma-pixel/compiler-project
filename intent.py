@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ast_nodes import ArrayAssignment, Assignment, BinaryOp, BoolLit, Declaration, Identifier, IfStmt, Number, PrintStmt, StringLit, UnaryOp, WhileStmt, child_nodes, index_nodes
+from ast_nodes import ArrayAssignment, Assignment, BinaryOp, BoolLit, CallExpr, CallStmt, Declaration, FunctionDef, Identifier, IfStmt, Number, PrintStmt, ReturnStmt, StringLit, UnaryOp, WhileStmt, child_nodes, index_nodes
 from unparser import pretty_print
 
 
@@ -47,10 +47,13 @@ def fingerprint(program_ast, protected_region=None):
     def visit_stmt(node, depth=0):
         if node.node_id in ignored:
             return
-        label = {Declaration: "DECL", Assignment: "ASSIGN", ArrayAssignment: "ASSIGN", IfStmt: "IF", WhileStmt: "WHILE", PrintStmt: "PRINT"}.get(type(node))
+        label = {Declaration: "DECL", Assignment: "ASSIGN", ArrayAssignment: "ASSIGN", IfStmt: "IF", WhileStmt: "WHILE", PrintStmt: "PRINT", FunctionDef: "FUNC", ReturnStmt: "RETURN", CallStmt: "CALL"}.get(type(node))
         if label:
             skeleton.append((depth, label))
-        if isinstance(node, (IfStmt, WhileStmt)):
+        if isinstance(node, FunctionDef):
+            for child in node.body:
+                visit_stmt(child, depth + 1)
+        elif isinstance(node, (IfStmt, WhileStmt)):
             visit_condition(node)
             for child in node.body:
                 visit_stmt(child, depth + 1)
@@ -61,6 +64,15 @@ def fingerprint(program_ast, protected_region=None):
             deps = _identifiers(node.expr) | (_identifiers(node.index) if hasattr(node, "index") else set())
             ops = _operators(node.expr) | (_operators(node.index) if hasattr(node, "index") else set())
             dependencies.append((node.node_id, node.name, tuple(sorted(deps)), tuple(sorted(ops))))
+        elif isinstance(node, ReturnStmt):
+            if node.expr is not None:
+                deps = _identifiers(node.expr)
+                ops = _operators(node.expr)
+                dependencies.append((node.node_id, "__return__", tuple(sorted(deps)), tuple(sorted(ops))))
+        elif isinstance(node, CallStmt):
+            deps = _identifiers(node.call)
+            ops = _operators(node.call)
+            dependencies.append((node.node_id, f"__call_{node.call.callee}__", tuple(sorted(deps)), tuple(sorted(ops))))
         elif isinstance(node, PrintStmt):
             prints.append((node.node_id, _normalized(node.expr)))
 
@@ -132,6 +144,11 @@ def _normalized(node):
 def _identifiers(node):
     if isinstance(node, Identifier):
         return {node.name}
+    if isinstance(node, CallExpr):
+        result = {node.callee}
+        for arg in node.args:
+            result |= _identifiers(arg)
+        return result
     result = set()
     for child in child_nodes(node):
         result |= _identifiers(child)

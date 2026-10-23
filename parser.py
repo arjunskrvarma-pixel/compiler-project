@@ -1,8 +1,8 @@
 from lexer import Token, lex
 from ast_nodes import *
 
-TYPE_TOKENS = ("INT", "FLOAT", "BOOL", "STRING_T")
-STMT_START = TYPE_TOKENS + ("IF", "WHILE", "PRINT", "ID")
+TYPE_TOKENS = ("INT", "FLOAT", "BOOL", "STRING_T", "VOID")
+STMT_START = TYPE_TOKENS + ("IF", "WHILE", "PRINT", "ID", "RETURN")
 EQUALITY_OPS = {"EQ": "==", "NEQ": "!="}
 CMP_OPS = {"LT": "<", "GT": ">", "LE": "<=", "GE": ">="}
 TERM_OPS = {"PLUS": "+", "MINUS": "-"}
@@ -55,18 +55,20 @@ class Parser:
 
     def _statement(self):
         if self._check(*TYPE_TOKENS):
-            return self._declaration()
+            return self._declaration_or_function()
         if self._check("IF"):
             return self._if_stmt()
         if self._check("WHILE"):
             return self._while_stmt()
         if self._check("PRINT"):
             return self._print_stmt()
+        if self._check("RETURN"):
+            return self._return_stmt()
         if self._check("ID"):
-            return self._assignment()
+            return self._id_stmt()
         raise self._error("statement", self._peek())
 
-    def _declaration(self):
+    def _declaration_or_function(self):
         type_tok = self._consume(*TYPE_TOKENS, expected="type")
         var_type = type_tok.value
         if self._check("LBRACKET"):
@@ -74,13 +76,58 @@ class Parser:
             self._consume("RBRACKET", expected="RBRACKET")
             var_type = f"{var_type}[]"
         name_tok = self._consume("ID", expected="ID")
+        if self._check("LPAREN"):
+            self._consume("LPAREN", expected="LPAREN")
+            params = []
+            if not self._check("RPAREN"):
+                params.append(self._param())
+                while self._check("COMMA"):
+                    self._advance()
+                    params.append(self._param())
+            self._consume("RPAREN", expected="RPAREN")
+            body = self._block()
+            return FunctionDef(var_type, name_tok.value, params, body, type_tok.line, col=type_tok.col)
+
+        if var_type == "void":
+            raise self._error("variable cannot have type void", type_tok)
         self._consume("ASSIGN", expected="ASSIGN")
         expr = self._expression()
         self._consume("SEMI", expected="SEMI")
         return Declaration(var_type, name_tok.value, expr, type_tok.line, col=type_tok.col)
 
-    def _assignment(self):
+    def _param(self):
+        p_type_tok = self._consume(*("INT", "FLOAT", "BOOL", "STRING_T"), expected="type")
+        p_type = p_type_tok.value
+        if self._check("LBRACKET"):
+            self._consume("LBRACKET", expected="LBRACKET")
+            self._consume("RBRACKET", expected="RBRACKET")
+            p_type = f"{p_type}[]"
+        p_name_tok = self._consume("ID", expected="ID")
+        return Param(p_type, p_name_tok.value, p_type_tok.line, col=p_type_tok.col)
+
+    def _return_stmt(self):
+        tok = self._consume("RETURN", expected="RETURN")
+        if self._check("SEMI"):
+            self._advance()
+            return ReturnStmt(None, tok.line, col=tok.col)
+        expr = self._expression()
+        self._consume("SEMI", expected="SEMI")
+        return ReturnStmt(expr, tok.line, col=tok.col)
+
+    def _id_stmt(self):
         name_tok = self._consume("ID", expected="ID")
+        if self._check("LPAREN"):
+            self._consume("LPAREN", expected="LPAREN")
+            args = []
+            if not self._check("RPAREN"):
+                args.append(self._expression())
+                while self._check("COMMA"):
+                    self._advance()
+                    args.append(self._expression())
+            self._consume("RPAREN", expected="RPAREN")
+            self._consume("SEMI", expected="SEMI")
+            call = CallExpr(name_tok.value, args, name_tok.line, col=name_tok.col)
+            return CallStmt(call, name_tok.line, col=name_tok.col)
         if self._check("LBRACKET"):
             self._consume("LBRACKET", expected="LBRACKET")
             index = self._expression()
@@ -211,6 +258,16 @@ class Parser:
             return BoolLit(False, tok.line, col=tok.col)
         if tok.type == "ID":
             self._advance()
+            if self._check("LPAREN"):
+                self._advance()
+                args = []
+                if not self._check("RPAREN"):
+                    args.append(self._expression())
+                    while self._check("COMMA"):
+                        self._advance()
+                        args.append(self._expression())
+                self._consume("RPAREN", expected="RPAREN")
+                return CallExpr(tok.value, args, tok.line, col=tok.col)
             return Identifier(tok.value, tok.line, col=tok.col)
         if tok.type == "LPAREN":
             self._advance()

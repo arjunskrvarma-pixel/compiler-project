@@ -1,0 +1,33 @@
+// Example showing custom function definitions and function calls in .lang
+
+int sum(int a, int b) {
+  return (a + b);
+}
+
+float average(float total, float count) {
+  return (total / count);
+}
+
+bool isEven(int n) {
+  return ((n % 2) == 0);
+}
+
+void printResult(string label, int val) {
+  print(label);
+  print(val);
+  return;
+}
+
+int a = 14;
+int b = 6;
+int result = sum(a, b);
+printResult("Sum is:", result);
+
+if (isEven(result)) {
+  print("The sum is even!");
+} else {
+  print("The sum is odd!");
+}
+
+float avg = average(float(result), 2.0);
+print(avg);

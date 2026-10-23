@@ -162,6 +162,56 @@ class ArrayAssignment:
 
 
 @dataclass
+class Param:
+    var_type: str
+    name: str
+    line: int
+    node_id: int = field(default=-1, compare=False)
+    parent_id: int | None = field(default=None, compare=False)
+    col: int = field(default=1, compare=False)
+
+
+@dataclass
+class FunctionDef:
+    return_type: str
+    name: str
+    params: list
+    body: list
+    line: int
+    node_id: int = field(default=-1, compare=False)
+    parent_id: int | None = field(default=None, compare=False)
+    col: int = field(default=1, compare=False)
+
+
+@dataclass
+class ReturnStmt:
+    expr: object
+    line: int
+    node_id: int = field(default=-1, compare=False)
+    parent_id: int | None = field(default=None, compare=False)
+    col: int = field(default=1, compare=False)
+
+
+@dataclass
+class CallExpr:
+    callee: str
+    args: list
+    line: int
+    node_id: int = field(default=-1, compare=False)
+    parent_id: int | None = field(default=None, compare=False)
+    col: int = field(default=1, compare=False)
+
+
+@dataclass
+class CallStmt:
+    call: CallExpr
+    line: int
+    node_id: int = field(default=-1, compare=False)
+    parent_id: int | None = field(default=None, compare=False)
+    col: int = field(default=1, compare=False)
+
+
+@dataclass
 class ErrorNode:
     expected: str
     found: str
@@ -176,7 +226,7 @@ def child_nodes(node):
     if not is_dataclass(node):
         return []
     children = []
-    skipped = {"node_id", "parent_id", "line", "col", "expected", "found", "raw_tokens", "name", "value", "var_type", "op", "target_type"}
+    skipped = {"node_id", "parent_id", "line", "col", "expected", "found", "raw_tokens", "name", "value", "var_type", "op", "target_type", "return_type", "callee"}
     for item in fields(node):
         if item.name in skipped:
             continue

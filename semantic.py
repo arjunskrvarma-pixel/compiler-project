@@ -23,10 +23,36 @@ def _error(message, node):
 class SemanticAnalyzer:
     def __init__(self):
         self.symbol_table = {}
+        self.functions = {}
+        self.current_function = None
+        self.local_scope = None
 
     def analyze(self, program: Program) -> None:
+        # Pre-pass: register function signatures
+        for stmt in program.statements:
+            if isinstance(stmt, FunctionDef):
+                if stmt.name in self.functions:
+                    raise _error(f"function '{stmt.name}' already declared", stmt)
+                param_names = set()
+                param_list = []
+                for p in stmt.params:
+                    if p.name in param_names:
+                        raise _error(f"duplicate parameter '{p.name}' in function '{stmt.name}'", p)
+                    param_names.add(p.name)
+                    param_list.append((p.var_type, p.name))
+                self.functions[stmt.name] = {
+                    "return_type": stmt.return_type,
+                    "params": param_list,
+                    "node": stmt,
+                }
+
         for stmt in program.statements:
             self._stmt(stmt)
+
+    def _lookup(self, name: str) -> str | None:
+        if self.local_scope is not None and name in self.local_scope:
+            return self.local_scope[name]
+        return self.symbol_table.get(name)
 
     def _stmt(self, node) -> None:
         if isinstance(node, Declaration):
@@ -41,9 +67,58 @@ class SemanticAnalyzer:
             self._while_stmt(node)
         elif isinstance(node, PrintStmt):
             self.type_of(node.expr)
+        elif isinstance(node, FunctionDef):
+            self._function_def(node)
+        elif isinstance(node, ReturnStmt):
+            self._return_stmt(node)
+        elif isinstance(node, CallStmt):
+            self._call_stmt(node)
+
+    def _function_def(self, node: FunctionDef) -> None:
+        prev_func = self.current_function
+        prev_scope = self.local_scope
+        self.current_function = node
+        self.local_scope = {}
+        for p in node.params:
+            self.local_scope[p.name] = p.var_type
+        for stmt in node.body:
+            self._stmt(stmt)
+        self.current_function = prev_func
+        self.local_scope = prev_scope
+
+    def _return_stmt(self, node: ReturnStmt) -> None:
+        if self.current_function is None:
+            raise _error("return statement outside function", node)
+        expected = self.current_function.return_type
+        if node.expr is None:
+            if expected != "void":
+                raise _error(f"non-void function '{self.current_function.name}' must return {expected}", node)
+        else:
+            if expected == "void":
+                raise _error(f"void function '{self.current_function.name}' cannot return a value", node)
+            expr_type = self.type_of(node.expr)
+            if expr_type != expected:
+                raise _error(f"function '{self.current_function.name}' expects return type {expected}, got {expr_type}", node)
+
+    def _check_call(self, node: CallExpr) -> str:
+        if node.callee not in self.functions:
+            raise _error(f"undeclared function '{node.callee}'", node)
+        func_info = self.functions[node.callee]
+        expected_params = func_info["params"]
+        if len(node.args) != len(expected_params):
+            raise _error(f"function '{node.callee}' expects {len(expected_params)} arguments, got {len(node.args)}", node)
+        for arg, (expected_type, param_name) in zip(node.args, expected_params):
+            arg_type = self.type_of(arg)
+            if arg_type != expected_type:
+                raise _error(f"argument type mismatch for parameter '{param_name}': expected {expected_type}, got {arg_type}", arg)
+        return func_info["return_type"]
+
+    def _call_stmt(self, node: CallStmt) -> None:
+        self._check_call(node.call)
 
     def _declaration(self, node: Declaration) -> None:
-        if node.name in self.symbol_table:
+        table = self.local_scope if self.local_scope is not None else self.symbol_table
+        if node.name in table:
             raise _error(f"variable '{node.name}' already declared", node)
         expr_type = self.type_of(node.expr)
         if expr_type != node.var_type:
@@ -51,12 +126,12 @@ class SemanticAnalyzer:
                 pass
             else:
                 raise _error(f"cannot assign {expr_type} to {node.var_type}", node)
-        self.symbol_table[node.name] = node.var_type
+        table[node.name] = node.var_type
 
     def _assignment(self, node: Assignment) -> None:
-        if node.name not in self.symbol_table:
+        var_type = self._lookup(node.name)
+        if var_type is None:
             raise _error(f"undeclared variable '{node.name}'", node)
-        var_type = self.symbol_table[node.name]
         expr_type = self.type_of(node.expr)
         if expr_type != var_type:
             if expr_type == "empty[]" and var_type.endswith("[]"):
@@ -64,9 +139,9 @@ class SemanticAnalyzer:
             raise _error(f"cannot assign {expr_type} to {var_type}", node)
 
     def _array_assignment(self, node: ArrayAssignment) -> None:
-        if node.name not in self.symbol_table:
+        var_type = self._lookup(node.name)
+        if var_type is None:
             raise _error(f"undeclared variable '{node.name}'", node)
-        var_type = self.symbol_table[node.name]
         if not var_type.endswith("[]"):
             raise _error(f"variable '{node.name}' is not an array", node)
         elem_type = var_type[:-2]
@@ -105,9 +180,15 @@ class SemanticAnalyzer:
         if isinstance(node, BoolLit):
             return "bool"
         if isinstance(node, Identifier):
-            if node.name not in self.symbol_table:
+            var_type = self._lookup(node.name)
+            if var_type is None:
                 raise _error(f"undeclared variable '{node.name}'", node)
-            return self.symbol_table[node.name]
+            return var_type
+        if isinstance(node, CallExpr):
+            ret_type = self._check_call(node)
+            if ret_type == "void":
+                raise _error(f"cannot use void function '{node.callee}' in expression", node)
+            return ret_type
         if isinstance(node, ArrayLit):
             if not node.elements:
                 return "empty[]"

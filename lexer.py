@@ -11,6 +11,8 @@ KEYWORDS = {
     "else": "ELSE",
     "while": "WHILE",
     "print": "PRINT",
+    "void": "VOID",
+    "return": "RETURN",
     "true": "TRUE",
     "false": "FALSE",
 }
@@ -79,6 +81,11 @@ def lex(source: str) -> list[Token]:
         if m:
             i = m.end()
             col += len(m.group())
+            continue
+
+        if source.startswith("//", i):
+            while i < n and source[i] != "\n":
+                i += 1
             continue
 
         start_line, start_col = line, col

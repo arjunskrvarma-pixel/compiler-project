@@ -1,0 +1,22 @@
+int sum(int a, int b) {
+  return (a + b);
+}
+
+int multiply(int a, int b) {
+  return (a * b);
+}
+
+void greet(string name) {
+  print(name);
+  return;
+}
+
+int x = 15;
+int y = 25;
+int total = sum(x, y);
+print(total);
+
+int product = multiply(total, 2);
+print(product);
+
+greet("Functions are working!");

@@ -1,16 +1,18 @@
 from copy import deepcopy
 
-from ast_nodes import ArrayAssignment, ArrayLit, Assignment, BinaryOp, BoolLit, Cast, Declaration, Identifier, IfStmt, IndexExpr, Number, PrintStmt, Program, StringLit, UnaryOp, WhileStmt, assign_node_ids, child_nodes, index_nodes
+from ast_nodes import ArrayAssignment, ArrayLit, Assignment, BinaryOp, BoolLit, CallExpr, CallStmt, Cast, Declaration, FunctionDef, Identifier, IfStmt, IndexExpr, Number, Param, PrintStmt, Program, ReturnStmt, StringLit, UnaryOp, WhileStmt, assign_node_ids, child_nodes, index_nodes
 
 OPS = {"+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||"}
 UNARY_OPS = {"-", "!"}
-TYPES = {"int", "float", "bool", "string", "int[]", "float[]", "bool[]", "string[]"}
+TYPES = {"int", "float", "bool", "string", "void", "int[]", "float[]", "bool[]", "string[]"}
 NODE_TYPES = {
     "Program": Program, "Declaration": Declaration, "Assignment": Assignment,
     "ArrayAssignment": ArrayAssignment, "IfStmt": IfStmt, "WhileStmt": WhileStmt,
     "PrintStmt": PrintStmt, "BinaryOp": BinaryOp, "Identifier": Identifier,
     "Number": Number, "StringLit": StringLit, "BoolLit": BoolLit,
     "Cast": Cast, "UnaryOp": UnaryOp, "ArrayLit": ArrayLit, "IndexExpr": IndexExpr,
+    "FunctionDef": FunctionDef, "ReturnStmt": ReturnStmt, "CallExpr": CallExpr,
+    "CallStmt": CallStmt, "Param": Param,
 }
 
 
@@ -67,13 +69,32 @@ def node_from_json(data):
         return IndexExpr(node_from_json(_value(data, "array")), node_from_json(_value(data, "index")), line)
     if kind == "ArrayAssignment":
         return ArrayAssignment(_string(data, "name"), node_from_json(_value(data, "index")), node_from_json(_value(data, "expr")), line)
+    if kind == "Param":
+        var_type = _string(data, "var_type")
+        if var_type not in TYPES:
+            raise PatchError("invalid param type")
+        return Param(var_type, _string(data, "name"), line)
+    if kind == "FunctionDef":
+        ret_type = _string(data, "return_type")
+        if ret_type not in TYPES:
+            raise PatchError("invalid return type")
+        params = [node_from_json(item) for item in _list(data, "params")]
+        return FunctionDef(ret_type, _string(data, "name"), params, _statements(data, "body"), line)
+    if kind == "ReturnStmt":
+        expr = node_from_json(data["expr"]) if "expr" in data and data["expr"] is not None else None
+        return ReturnStmt(expr, line)
+    if kind == "CallExpr":
+        args = [node_from_json(item) for item in _list(data, "args")]
+        return CallExpr(_string(data, "callee"), args, line)
+    if kind == "CallStmt":
+        return CallStmt(node_from_json(_value(data, "call")), line)
     target_type = _string(data, "target_type")
     if target_type not in TYPES:
         raise PatchError("invalid type name")
     return Cast(target_type, node_from_json(_value(data, "expr")), line)
 
 
-STATEMENT_TYPES = (Declaration, Assignment, IfStmt, WhileStmt, PrintStmt, ArrayAssignment)
+STATEMENT_TYPES = (Declaration, Assignment, IfStmt, WhileStmt, PrintStmt, ArrayAssignment, FunctionDef, ReturnStmt, CallStmt)
 
 
 def _statements(data, key):

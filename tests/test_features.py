@@ -304,3 +304,79 @@ def test_array_ast_patch_and_intent():
     fp_orig = fingerprint(ast)
     fp_repaired = fingerprint(parse(pretty_print(ast)))
     assert compare(fp_orig, fp_repaired) == []
+
+
+def test_function_definition_and_calls():
+    src = """int add(int a, int b) {
+  return (a + b);
+}
+int res = add(10, 20);
+print(res);
+"""
+    ok, err, err_type = verify_fix(src)
+    assert ok, f"Expected verify_fix to pass, got {err_type}: {err}"
+    ast = parse(src)
+    assert pretty_print(ast).strip() == src.strip()
+
+
+def test_function_void_and_return():
+    src = """void logMessage(string msg) {
+  print(msg);
+  return;
+}
+logMessage("status ok");
+"""
+    ok, err, err_type = verify_fix(src)
+    assert ok, f"Expected verify_fix to pass, got {err_type}: {err}"
+    ast = parse(src)
+    assert pretty_print(ast).strip() == src.strip()
+
+
+def test_function_semantic_errors():
+    with pytest.raises(SemanticError) as exc1:
+        SemanticAnalyzer().analyze(parse("int foo(int a, int a) { return a; }"))
+    assert "duplicate parameter" in str(exc1.value)
+
+    with pytest.raises(SemanticError) as exc2:
+        SemanticAnalyzer().analyze(parse("int foo() { return \"wrong\"; }"))
+    assert "expects return type int, got string" in str(exc2.value)
+
+    with pytest.raises(SemanticError) as exc3:
+        SemanticAnalyzer().analyze(parse("void bar() { return 42; }"))
+    assert "void function 'bar' cannot return a value" in str(exc3.value)
+
+    with pytest.raises(SemanticError) as exc4:
+        SemanticAnalyzer().analyze(parse("return 1;"))
+    assert "return statement outside function" in str(exc4.value)
+
+    with pytest.raises(SemanticError) as exc5:
+        SemanticAnalyzer().analyze(parse("int f(int x) { return x; } int y = f(1, 2);"))
+    assert "expects 1 arguments, got 2" in str(exc5.value)
+
+    with pytest.raises(SemanticError) as exc6:
+        SemanticAnalyzer().analyze(parse("int f(int x) { return x; } int y = f(\"hello\");"))
+    assert "argument type mismatch" in str(exc6.value)
+
+    with pytest.raises(SemanticError) as exc7:
+        SemanticAnalyzer().analyze(parse("void v() {} int x = v();"))
+    assert "cannot use void function" in str(exc7.value)
+
+
+def test_function_ast_patch_and_intent():
+    ast = parse("int doubleIt(int x) { return (x + x); } int r = doubleIt(5);")
+    fn_node = ast.statements[0]
+    patched = apply_edits(ast, [{
+        "op": "REPLACE_NODE",
+        "target": fn_node.node_id,
+        "node": {
+            "type": "FunctionDef",
+            "return_type": "int",
+            "name": "doubleIt",
+            "params": [{"type": "Param", "var_type": "int", "name": "x"}],
+            "body": [{"type": "ReturnStmt", "expr": {"type": "BinaryOp", "op": "*", "left": {"type": "Identifier", "name": "x"}, "right": {"type": "Number", "value": "2"}}}]
+        }
+    }])
+    assert "return (x * 2);" in pretty_print(patched)
+    fp_orig = fingerprint(ast)
+    fp_repaired = fingerprint(parse(pretty_print(ast)))
+    assert compare(fp_orig, fp_repaired) == []
